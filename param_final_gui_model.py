@@ -579,8 +579,6 @@ def fts_cheng_apso(data_column, dfi, params):
         raise ValueError(f"Kolom '{data_column}' tidak ditemukan di dataframe. Kolom yang tersedia: {dfi.columns.tolist()}")
     except Exception as e:
         raise ValueError(f"Gagal memproses data: {str(e)}")
-
-
 # ==============================================
 # 11. PLOT PREDIKSI
 # ==============================================
