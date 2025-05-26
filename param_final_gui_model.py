@@ -559,21 +559,21 @@ def fts_cheng_apso(data_column, dfi, params):
 
     print(f"\nMAPE Training: {train_mape:.2f}%")
     print(f"MAPE Testing: {test_mape:.2f}%")
-
-    return {
-        'intervals': intervals_df,
-        'fuzzification': fuzzification_df,
-        'flr': flr_df,
-        'flrg': flrg_df,
-        'weight_matrix': weight_df,
-        'standardized_weight': standardized_weight_df,
-        'defuzzification': defuzzification_df,
-        'train_mape': train_mape,
-        'test_mape': test_mape,
-        'test_dates': test_dates,
-        'test_actual': test_data,
-        'test_pred': np.array(test_predictions),
-        'data_column': data_column,
+        # Hasil akhir
+        return {
+            'intervals': intervals_df,
+            'fuzzification': fuzzification_df,
+            'flr': flr_df,
+            'flrg': flrg_df,
+            'weight_matrix': weight_df,
+            'standardized_weight': standardized_weight_df,
+            'defuzzification': defuzzification_df,
+            'train_mape': train_mape,
+            'test_mape': test_mape,
+            'test_dates': test_dates,
+            'test_actual': test_data,
+            'test_pred': np.array(test_predictions),
+            'data_column': data_column,
         }
 
     except KeyError as e:
