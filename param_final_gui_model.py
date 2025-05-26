@@ -574,7 +574,8 @@ def fts_cheng_apso(data_column, dfi, params):
         'test_actual': test_data,
         'test_pred': np.array(test_predictions),
         'data_column': data_column,
-    }
+        }
+
     except KeyError as e:
         raise ValueError(f"Kolom '{data_column}' tidak ditemukan di dataframe. Kolom yang tersedia: {dfi.columns.tolist()}")
     except Exception as e:
