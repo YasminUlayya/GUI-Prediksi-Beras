@@ -1,11 +1,5 @@
-numpy  
-pandas  
-matplotlib.pyplot  
-sklearn.metrics  
-sklearn.model_selection  
-IPython.display  
-streamlit  
-io  
-base64  
-datetime  
-time  
+numpy
+pandas
+matplotlib
+scikit-learn
+streamlit
