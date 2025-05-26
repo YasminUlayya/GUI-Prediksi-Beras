@@ -80,12 +80,11 @@ def load_and_analyze_data(df_preprocessing):
     """
     # 1. Load & Prepare Dataset
     dfi = df_preprocessing.copy()
-    dfi = dfi.set_index('Tanggal')  # Kolom 'Tanggal' jadi index
+    dfi.reset_index(inplace=True)
+    dfi.set_index('Tanggal', inplace=True)
     return dfi
 
-# ==============================================
-# FUNGSI UTAMA YANG BISA DIGUNAKAN UNTUK KEDUA JENIS BERAS
-# ==============================================
+dfi = load_and_analyze_data(df_preprocessing)
 
 def fts_cheng_apso(data_column, dfi, params):
     """Pastikan fungsi ini menerima nama kolom yang benar"""
@@ -129,11 +128,6 @@ def fts_cheng_apso(data_column, dfi, params):
         particles = []
         velocities = []
 
-        # Cari jumlah dimensi maksimum yang mungkin (untuk header tabel)
-        max_possible_dimensions = max_intervals - 1
-        max_actual_dimensions = 0
-
-        print("\n=== TABEL INISIALISASI POSISI PARTIKEL AWAL ===")
 
         # Inisialisasi partikel dan simpan data untuk tabel
         table_data = []
@@ -148,31 +142,8 @@ def fts_cheng_apso(data_column, dfi, params):
             if current_dimensions > max_actual_dimensions:
                 max_actual_dimensions = current_dimensions
 
-            # Simpan data untuk tabel
-            row = {'Partikel': i+1}
-            for j in range(current_dimensions):
-                row[f'X{j+1}'] = cut_points[j]
-            table_data.append(row)
 
-        # Buat DataFrame untuk ditampilkan
-        df_display = pd.DataFrame(table_data)
-
-        # Format kolom X untuk konsistensi
-        for col in df_display.columns:
-            if col.startswith('X'):
-                df_display[col] = df_display[col].apply(lambda x: f"{x:.4f}" if pd.notnull(x) else '-')
-
-        # Tampilkan tabel menggunakan display
-        display(df_display.style
-                      .set_properties(**{'text-align': 'center'})
-                      .format(None, na_rep="-")
-                      .set_caption("Inisialisasi Posisi Partikel Awal"))
-
-        print(f"\nTotal Partikel: {n_particles}")
-        print(f"Dimensi maksimum yang terbentuk: {max_actual_dimensions}")
-        print("="*70 + "\n")
-
-        # Fungsi fitness dengan MAPE
+        # 2. Perhitungan Fitness dan Inisialisasi pBest/gBest
         def calculate_fitness(particle):
             # Tambahkan batas bawah dan atas
             intervals = np.concatenate(([U_min], np.sort(particle), [U_max]))
@@ -227,11 +198,11 @@ def fts_cheng_apso(data_column, dfi, params):
                 current_idx = state_to_idx[current_state]
 
                 # Hitung prediksi sebagai weighted sum
-                weighted_sum = 0
+                defuzzified_value = 0
                 for j, state in enumerate(unique_states):
-                    weighted_sum += standardized_weight[current_idx, j] * midpoint_dict[state]
+                    defuzzified_value += standardized_weight[current_idx, j] * midpoint_dict[state]
 
-                predictions.append(weighted_sum)
+                predictions.append(defuzzified_value)
                 actuals.append(train_data[i+1])
 
             # Hitung MAPE
@@ -240,13 +211,6 @@ def fts_cheng_apso(data_column, dfi, params):
                 return mape  # Kembalikan langsung nilai MAPE (semakin kecil semakin baik)
             else:
                 return float('inf')  # Jika tidak ada prediksi, kembalikan nilai tak terhingga
-
-        # Inisialisasi best positions
-        personal_best_positions = particles.copy()
-        personal_best_scores = np.array([calculate_fitness(p) for p in particles])
-        global_best_index = np.argmin(personal_best_scores)
-        global_best_position = particles[global_best_index].copy()
-        global_best_score = personal_best_scores[global_best_index]
 
         def calculate_evolutionary_factor(particles, gbest):
             # Hitung centroid swarm (hanya untuk partikel dengan dimensi yang sama)
@@ -275,78 +239,101 @@ def fts_cheng_apso(data_column, dfi, params):
             w_raw = 1 / (1 + 1.5 * np.exp(-2.6 * f))  # Output asli: ~[0.4, 0.9]
             return w_raw
 
-        # Lists to store parameter values across iterations
+        # Inisialisasi best positions
+        personal_best_positions = particles.copy()
+        personal_best_scores = np.array([calculate_fitness(p) for p in particles])
+        global_best_index = np.argmin(personal_best_scores)
+        global_best_position = particles[global_best_index].copy()
+        global_best_score = personal_best_scores[global_best_index]
+
+        # Simpan nilai parameter seluruh iterasi
         w_history = []
         c1_history = []
         c2_history = []
         v_history = []
         global_best_history = []
 
-        # Store first iteration data
-        first_iter_fitness = None
-        first_iter_pbest = None
+        # Variabel pelacakan
+        w_history, c1_history, c2_history = [], [], []
+        velocity_history = []
+        position_history = [[] for _ in range(n_particles)]
 
-        # Iterasi APSO
+        # Sebelum Loop APSO
+        first_iter_fitness = np.array([calculate_fitness(p) for p in particles])  # Fitness awal
+        first_iter_pbest = particles.copy()  # Posisi awal partikel
+
+        # Loop Utama APSO
         for iter in range(max_iter):
-            # Update parameter adaptif
-            # Hitung evolutionary factor f
+            # 3. Pembaruan Kecepatan dengan Parameter Adaptif
             f = calculate_evolutionary_factor(particles, global_best_position)
-            # Hitung w berdasarkan f
             w = calculate_w(f)
-            # c1 INCREASE secara linear dari c1_min ke c1_max (pakai strategi exploration)
-            c1 = c1_min + (c1_max - c1_min) * (iter / max_iter)
-            # c2 REDUCE secara linear dari c2_max ke c2_min (pakai strategi exploration)
-            c2 = c2_max - (c2_max - c2_min) * (iter / max_iter)
 
-            # Store parameters for this iteration
+            # Penyesuaian c1 dan c2 dengan batasan δ
+            delta = np.random.uniform(0.05, 0.1)
+            if iter == 0:
+                # Inisialisasi iterasi pertama
+                first_iter_fitness = personal_best_scores.copy()
+                first_iter_pbest = personal_best_positions.copy()
+                c1, c2 = c1_max, c2_min  # Strategy 1: c1 tinggi, c2 rendah untuk eksplorasi awal
+            else:
+                # Strategy 1: c1 meningkat, c2 menurun (eksplorasi)
+                delta_c1 = np.clip((c1_max - c1_prev) * (iter/max_iter), 0, delta)  # Pastikan delta_c1 >= 0
+                delta_c2 = np.clip((c2_min - c2_prev) * (iter/max_iter), -delta, 0)  # Pastikan delta_c2 <= 0
+
+                c1 = np.clip(c1_prev + delta_c1, c1_min, c1_max)
+                c2 = np.clip(c2_prev + delta_c2, c2_min, c2_max)
+
+                # Penormalan jika c1 + c2 > 4.0
+                if (c1 + c2) > 4.0:
+                    total = c1 + c2
+                    c1, c2 = (c1/total)*4.0, (c2/total)*4.0
+
+            c1_prev, c2_prev = c1, c2  # Simpan nilai untuk iterasi berikutnya
+
+            # 4. Pembaruan Posisi
+            for i in range(n_particles):
+                if len(particles[i]) != len(global_best_position):
+                    continue
+
+                # Pembaruan kecepatan
+                r1, r2 = np.random.random(), np.random.random()
+                velocities[i] = w * velocities[i] + \
+                               c1 * r1 * (personal_best_positions[i] - particles[i]) + \
+                               c2 * r2 * (global_best_position - particles[i])
+
+                # Pembaruan posisi
+                particles[i] += velocities[i]
+                particles[i] = np.clip(particles[i], U_min, U_max)
+                particles[i] = np.sort(particles[i])
+
+                # Simpan kecepatan dan posisi
+                velocity_history.append(np.linalg.norm(velocities[i]))
+                position_history[i].append(particles[i].mean())
+
+            # 5. Evaluasi Fitness dan Pembaruan pBest/gBest
+            for i in range(n_particles):
+                current_fitness = calculate_fitness(particles[i])
+                if current_fitness < personal_best_scores[i]:
+                    personal_best_positions[i] = particles[i].copy()
+                    personal_best_scores[i] = current_fitness
+                    if current_fitness < global_best_score:
+                        global_best_position = particles[i].copy()
+                        global_best_score = current_fitness
+
+            # Simpan parameter
             w_history.append(w)
             c1_history.append(c1)
             c2_history.append(c2)
             v_history.append(np.mean([np.linalg.norm(v) for v in velocities if len(v) == len(global_best_position)]))
             global_best_history.append(global_best_score)
 
-            # Capture first iteration data
-            if iter == 0:
-                first_iter_fitness = personal_best_scores.copy()
-                first_iter_pbest = personal_best_positions.copy()
-
-            for i in range(n_particles):
-                # Skip if particle has different dimension than global best
-                if len(particles[i]) != len(global_best_position):
-                    continue
-
-                # Update velocity
-                r1, r2 = np.random.random(), np.random.random()
-                velocities[i] = w * velocities[i] + c1 * r1 * (personal_best_positions[i] - particles[i]) + c2 * r2 * (global_best_position - particles[i])
-
-                # Update position
-                particles[i] += velocities[i]
-                particles[i] = np.clip(particles[i], U_min, U_max)
-                particles[i] = np.sort(particles[i])
-
-                # Evaluasi fitness
-                current_fitness = calculate_fitness(particles[i])
-
-                # Update personal best
-                if current_fitness < personal_best_scores[i]:
-                    personal_best_positions[i] = particles[i].copy()
-                    personal_best_scores[i] = current_fitness
-
-                    # Update global best
-                    if current_fitness < global_best_score:
-                        global_best_position = particles[i].copy()
-                        global_best_score = current_fitness
-
-            # Print progress
-            if (iter+1) % 10 == 0:
-                print(f"Iterasi {iter+1}, Fitness Terbaik: {global_best_score:.4f}")
-
-            # Store final iteration data if last iteration
-            if iter == max_iter - 1:
-                final_particles = particles.copy()
-                final_fitness = np.array([calculate_fitness(p) for p in particles])
-                final_pbest = personal_best_positions.copy()
-                final_pbest_scores = personal_best_scores.copy()
+        # 6. Hasil Akhir
+        # Simpan data iterasi terakhir
+        if iter == max_iter - 1:
+            final_particles = particles.copy()
+            final_fitness = np.array([calculate_fitness(p) for p in particles])
+            final_pbest = personal_best_positions.copy()
+            final_pbest_scores = personal_best_scores.copy()
 
         # Hasil interval terbaik
         best_intervals = np.concatenate(([U_min], np.sort(global_best_position), [U_max]))
@@ -354,309 +341,226 @@ def fts_cheng_apso(data_column, dfi, params):
         print(f"\nMencari interval optimal dengan APSO untuk {data_column} (Training Data)...")
         print("\nInterval Optimal:", best_intervals)
 
-        # ==============================================
-        # NEW: TABEL HASIL FINAL ITERASI APSO
-        # ==============================================
-        print("\n=== HASIL FINAL ITERASI APSO ===")
 
-        # 1. Fitness value at first iteration
-        print("\n1. Fitness Value at First Iteration:")
-        first_iter_fitness_df = pd.DataFrame({
-            'Partikel': range(1, n_particles+1),
-            'Fitness': first_iter_fitness
-        })
-        display(first_iter_fitness_df.style
-              .format({'Fitness': '{:.6f}'})
-              .background_gradient(cmap='YlGn_r', subset=['Fitness'])
-              .set_caption("Fitness Values at First Iteration"))
 
-        # 2. Pbest at first iteration
-        print("\n2. Personal Best (Pbest) at First Iteration:")
-        first_iter_pbest_data = []
-        for i in range(n_particles):
-            first_iter_pbest_data.append({
-                'Partikel': i+1,
-                'Pbest Fitness': first_iter_fitness[i],
-                'Pbest Intervals': np.concatenate(([U_min], np.sort(first_iter_pbest[i]), [U_max]))
-            })
-
-        first_iter_pbest_df = pd.DataFrame(first_iter_pbest_data)
-        display(first_iter_pbest_df.style
-              .format({'Pbest Fitness': '{:.6f}'})
-              .background_gradient(cmap='YlOrBr_r', subset=['Pbest Fitness'])
-              .set_caption("Personal Best Values at First Iteration"))
-
-        # 3. Plot parameter values across iterations
-        print("\n3. Parameter Values Across Iterations:")
-        plt.figure(figsize=(12, 8))
-
-        # Plot w, c1, c2
-        plt.subplot(2, 1, 1)
-        plt.plot(w_history, label='w (inertia)')
-        plt.plot(c1_history, label='c1 (cognitive)')
-        plt.plot(c2_history, label='c2 (social)')
-        plt.title('Parameter Values Across Iterations')
-        plt.xlabel('Iteration')
-        plt.ylabel('Value')
-        plt.legend()
-        plt.grid(True)
-
-        # Plot velocity norm and global best fitness
-        plt.subplot(2, 1, 2)
-        plt.plot(v_history, label='Average Velocity Norm', color='purple')
-        plt.plot(global_best_history, label='Global Best Fitness', color='red')
-        plt.title('Velocity and Fitness Across Iterations')
-        plt.xlabel('Iteration')
-        plt.ylabel('Value')
-        plt.legend()
-        plt.grid(True)
-
-        plt.tight_layout()
-        plt.show()
-
-        # Tabel: Fitness tiap partikel di iterasi terakhir
-        fitness_df = pd.DataFrame({
-            'Partikel ke-n': range(1, n_particles+1),
-            'Nilai Fitness': final_fitness
-        })
-        print("\nTabel Fitness Partikel (Iterasi Terakhir):")
-        display(fitness_df.style
-                      .set_properties(**{
-                          'text-align': 'center',
-                          'color': 'black'  # Ensure text is readable
-                      })
-                      .format({'Nilai Fitness': "{:.6f}"})
-                      .background_gradient(
-                          cmap='YlGn_r',  # Reversed colormap for darker=smaller
-                          subset=['Nilai Fitness'],
-                          vmin=fitness_df['Nilai Fitness'].min(),
-                          vmax=fitness_df['Nilai Fitness'].max()
-                      )
-                      .set_caption("Fitness Partikel (Iterasi Terakhir)")
-                      .set_table_styles([{
-                          'selector': 'caption',
-                          'props': [('font-size', '14px'),
-                                  ('font-weight', 'bold'),
-                                  ('text-align', 'center')]
-                      }]))
-
-        # Tabel: Pbest tiap partikel di iterasi terakhir
-        pbest_data = []
-        for i in range(n_particles):
-            pbest_data.append({
-                'Partikel ke-n': i+1,
-                'Pbest Fitness': final_pbest_scores[i],
-                'Pbest Intervals': np.concatenate(([U_min], np.sort(final_pbest[i]), [U_max]))
-            })
-
-        pbest_df = pd.DataFrame(pbest_data)
-        print("\nTabel Pbest Tiap Partikel:")
-        display(pbest_df.style
-                      .set_properties(**{
-                          'text-align': 'center',
-                          'color': 'black'  # Ensure text is readable
-                      })
-                      .format({'Pbest Fitness': "{:.6f}"})
-                      .background_gradient(
-                          cmap='YlOrBr_r',  # Reversed colormap for darker=smaller
-                          subset=['Pbest Fitness'],
-                          vmin=pbest_df['Pbest Fitness'].min(),
-                          vmax=pbest_df['Pbest Fitness'].max()
-                      )
-                      .set_caption("Personal Best (Pbest) Partikel")
-                      .set_table_styles([{
-                          'selector': 'caption',
-                          'props': [('font-size', '14px'),
-                                  ('font-weight', 'bold'),
-                                  ('text-align', 'center')]
-                      }]))
-
-        # ==============================================
-        # 3. MEMBUAT TABEL INTERVAL
-        # ==============================================
-        intervals_table = []
-        for i in range(len(best_intervals)-1):
-            lower = best_intervals[i]
-            upper = best_intervals[i+1]
-            midpoint = (lower + upper) / 2
-            intervals_table.append({
-                'Ui': f'U{i+1}',
-                'Lower Limit': lower,
-                'Upper Limit': upper,
-                'Middle Value': midpoint,
-                'Class Conversion': f'A{i+1}'
-            })
-
-        intervals_df = pd.DataFrame(intervals_table)
-        print("\nTabel Interval:")
-        display(intervals_df.style.set_properties(**{'text-align': 'center'})) # Modified to use display
-
-        # ==============================================
-        # 4. FUZZIFIKASI DATA
-        # ==============================================
-        train_fuzzification = []
-        for value in train_data:
-            for idx, row in intervals_df.iterrows():
-                if row['Lower Limit'] <= value < row['Upper Limit']:
-                    train_fuzzification.append(row['Class Conversion'])
-                    break
-            else:
-                if value == intervals_df.iloc[-1]['Upper Limit']:
-                    train_fuzzification.append(intervals_df.iloc[-1]['Class Conversion'])
-
-        test_fuzzification = []
-        for value in test_data:
-            for idx, row in intervals_df.iterrows():
-                if row['Lower Limit'] <= value < row['Upper Limit']:
-                    test_fuzzification.append(row['Class Conversion'])
-                    break
-            else:
-                if value == intervals_df.iloc[-1]['Upper Limit']:
-                    test_fuzzification.append(intervals_df.iloc[-1]['Class Conversion'])
-
-        # Gabungkan fuzzifikasi untuk FLR (training saja)
-        fuzzification_df = pd.DataFrame({
-            'Fi': [f'F{i+1}' for i in range(len(train_data))],
-            'Data Aktual': train_data,
-            'Fuzzification': train_fuzzification
-        })
-        print("\nTabel Fuzzifikasi (Training):")
-        display(fuzzification_df.style.set_properties(**{'text-align': 'center'}))
-
-        # ==============================================
-        # 5. FUZZY LOGICAL RELATIONSHIP (FLR)
-        # ==============================================
-        flr = []
-        for i in range(len(train_fuzzification)-1):
-            flr.append(f"{train_fuzzification[i]} -> {train_fuzzification[i+1]}")
-
-        flr_df = pd.DataFrame({
-            'Data Aktual': train_data[1:],
-            'Fuzzification': train_fuzzification[1:],
-            'FLR': flr
-        })
-        print("\nTabel FLR (Training):")
-        display(flr_df.style.set_properties(**{'text-align': 'center'}))
-
-        # ==============================================
-        # 6. FUZZY LOGICAL RELATIONSHIP GROUPS (FLRG)
-        # ==============================================
-        unique_states = sorted(set(train_fuzzification))
-        flrg = {state: [] for state in unique_states}
-
-        for rel in flr:
-            current, next_state = rel.split(' -> ')
-            if next_state not in flrg[current]:
-                flrg[current].append(next_state)
-
-        flrg_table = []
-        for i, (key, values) in enumerate(flrg.items()):
-            flrg_table.append({
-                'Group': f'G{i+1}',
-                'FLRG': f"{key} -> {', '.join(values)}" if values else f"{key} -> "
-            })
-
-        flrg_df = pd.DataFrame(flrg_table)
-        print("\nTabel FLRG (Training):")
-        display(flrg_df.style.set_properties(**{'text-align': 'center'}))
-
-        # ==============================================
-        # 7. MATRIKS PEMBOBOTAN
-        # ==============================================
-        weight_matrix = np.zeros((len(unique_states), len(unique_states)))
-
-        # Mapping state ke index
-        state_to_idx = {state: idx for idx, state in enumerate(unique_states)}
-
-        for rel in flr:
-            current, next_state = rel.split(' -> ')
-            weight_matrix[state_to_idx[current], state_to_idx[next_state]] += 1
-
-        weight_df = pd.DataFrame(weight_matrix,
-                                index=[f"From {s}" for s in unique_states],
-                                columns=[f"To {s}" for s in unique_states])
-        print("\nMatriks Pembobotan (Training):")
-        display(weight_df.style.set_properties(**{'text-align': 'center'}))
-
-        # ==============================================
-        # 8. MATRIKS PEMBOBOTAN DISTANDARISASI
-        # ==============================================
-        standardized_weight = weight_matrix.copy()
-        row_sums = standardized_weight.sum(axis=1)
-        standardized_weight = np.divide(standardized_weight, row_sums[:, np.newaxis],
-                                      where=row_sums[:, np.newaxis]!=0)
-
-        standardized_weight_df = pd.DataFrame(standardized_weight,
-                                          index=[f"From {s}" for s in unique_states],
-                                          columns=[f"To {s}" for s in unique_states])
-        print("\nMatriks Pembobotan Distandarisasi (Training):")
-        display(standardized_weight_df.style.set_properties(**{'text-align': 'center'}))
-
-        # ==============================================
-        # 9. DEFUZZIFIKASI
-        # ==============================================
-        middle_values = {row['Class Conversion']: row['Middle Value'] for _, row in intervals_df.iterrows()}
-
-        # Prediksi training
-        train_predictions = []
-        for i in range(len(train_fuzzification)-1):
-            current_state = train_fuzzification[i]
-            current_idx = state_to_idx[current_state]
-
-            weighted_sum = 0
-            for j, state in enumerate(unique_states):
-                weighted_sum += standardized_weight[current_idx, j] * middle_values[state]
-
-            train_predictions.append(weighted_sum)
-        train_predictions.insert(0, np.nan)  # Tambahkan NaN untuk prediksi pertama
-
-        # Prediksi testing
-        test_predictions = []
-        last_train_state = train_fuzzification[-1]
-
-        for i in range(len(test_fuzzification)):
-            current_idx = state_to_idx[last_train_state]
-
-            weighted_sum = 0
-            for j, state in enumerate(unique_states):
-                weighted_sum += standardized_weight[current_idx, j] * middle_values[state]
-
-            test_predictions.append(weighted_sum)
-            last_train_state = test_fuzzification[i]  # Update state untuk prediksi berikutnya
-
-        # Gabungkan hasil prediksi
-        all_data = np.concatenate((train_data, test_data))
-        all_fuzzification = train_fuzzification + test_fuzzification
-        all_predictions = train_predictions + test_predictions
-
-        defuzzification_df = pd.DataFrame({
-            'Current State': all_fuzzification,
-            'Next State': all_fuzzification[1:] + [np.nan],
-            'Hasil Prediksi': all_predictions,
-            'Data Aktual': all_data,
-            'Type': ['Training']*len(train_data) + ['Testing']*len(test_data)
+    # ==============================================
+    # 3. MEMBUAT TABEL INTERVAL
+    # ==============================================
+    intervals_table = []
+    for i in range(len(best_intervals)-1):
+        lower = best_intervals[i]
+        upper = best_intervals[i+1]
+        midpoint = (lower + upper) / 2
+        intervals_table.append({
+            'Ui': f'U{i+1}',
+            'Lower Limit': lower,
+            'Upper Limit': upper,
+            'Middle Value': midpoint,
+            'Class Conversion': f'A{i+1}'
         })
 
-        print("\nTabel Defuzzifikasi (Training & Testing):")
-        display(defuzzification_df.style.set_properties(**{'text-align': 'center'}))
+    intervals_df = pd.DataFrame(intervals_table)
+    print("\nTabel Interval:")
+    display(intervals_df.style.set_properties(**{'text-align': 'center'}))
 
-        # ==============================================
-        # 10. HITUNG MAPE
-        # ==============================================
-        # Training MAPE
-        train_actual = defuzzification_df[defuzzification_df['Type']=='Training']['Data Aktual'].iloc[1:-1]
-        train_pred = defuzzification_df[defuzzification_df['Type']=='Training']['Hasil Prediksi'].iloc[1:-1]
-        train_mape = mean_absolute_percentage_error(train_actual, train_pred) * 100
+    # ==============================================
+    # 4. FUZZIFIKASI DATA
+    # ==============================================
+    train_fuzzification = []
+    for value in train_data:
+        for idx, row in intervals_df.iterrows():
+            if row['Lower Limit'] <= value < row['Upper Limit']:
+                train_fuzzification.append(row['Class Conversion'])
+                break
+        else:
+            if value == intervals_df.iloc[-1]['Upper Limit']:
+                train_fuzzification.append(intervals_df.iloc[-1]['Class Conversion'])
 
-        # Testing MAPE
-        test_actual = defuzzification_df[defuzzification_df['Type']=='Testing']['Data Aktual']
-        test_pred = defuzzification_df[defuzzification_df['Type']=='Testing']['Hasil Prediksi']
-        test_mape = mean_absolute_percentage_error(test_actual, test_pred) * 100
+    test_fuzzification = []
+    for value in test_data:
+        for idx, row in intervals_df.iterrows():
+            if row['Lower Limit'] <= value < row['Upper Limit']:
+                test_fuzzification.append(row['Class Conversion'])
+                break
+        else:
+            if value == intervals_df.iloc[-1]['Upper Limit']:
+                test_fuzzification.append(intervals_df.iloc[-1]['Class Conversion'])
 
-        print(f"\nMAPE Training: {train_mape:.2f}%")
-        print(f"MAPE Testing: {test_mape:.2f}%")
+    # Gabungkan fuzzifikasi untuk FLR (training saja)
+    fuzzification_df = pd.DataFrame({
+        'Fi': [f'F{i+1}' for i in range(len(train_data))],
+        'Data Aktual': train_data,
+        'Fuzzification': train_fuzzification
+    })
+    print("\nTabel Fuzzifikasi (Training):")
+    display(fuzzification_df.style.set_properties(**{'text-align': 'center'}))
 
-        return {
+    # ==============================================
+    # 5. FUZZY LOGICAL RELATIONSHIP (FLR)
+    # ==============================================
+    flr = []
+    for i in range(len(train_fuzzification)-1):
+        flr.append(f"{train_fuzzification[i]} -> {train_fuzzification[i+1]}")
+
+    flr_df = pd.DataFrame({
+        'Data Aktual': train_data[1:],
+        'Fuzzification': train_fuzzification[1:],
+        'FLR': flr
+    })
+    print("\nTabel FLR (Training):")
+    display(flr_df.style.set_properties(**{'text-align': 'center'}))
+
+    # ==============================================
+    # 6. FUZZY LOGICAL RELATIONSHIP GROUPS (FLRG)
+    # ==============================================
+    unique_states = sorted(set(train_fuzzification))
+    flrg = {state: [] for state in unique_states}
+
+    for rel in flr:
+        current, next_state = rel.split(' -> ')
+        if next_state not in flrg[current]:
+            flrg[current].append(next_state)
+
+    flrg_table = []
+    for i, (key, values) in enumerate(flrg.items()):
+        flrg_table.append({
+            'Group': f'G{i+1}',
+            'FLRG': f"{key} -> {', '.join(values)}" if values else f"{key} -> "
+        })
+
+    flrg_df = pd.DataFrame(flrg_table)
+    print("\nTabel FLRG (Training):")
+    display(flrg_df.style.set_properties(**{'text-align': 'center'}))
+
+    # ==============================================
+    # 7. MATRIKS PEMBOBOTAN
+    # ==============================================
+    weight_matrix = np.zeros((len(unique_states), len(unique_states)))
+
+    # Mapping state ke index
+    state_to_idx = {state: idx for idx, state in enumerate(unique_states)}
+
+    for rel in flr:
+        current, next_state = rel.split(' -> ')
+        weight_matrix[state_to_idx[current], state_to_idx[next_state]] += 1
+
+    weight_df = pd.DataFrame(weight_matrix,
+                            index=[f"From {s}" for s in unique_states],
+                            columns=[f"To {s}" for s in unique_states])
+    print("\nMatriks Pembobotan (Training):")
+    display(weight_df.style.set_properties(**{'text-align': 'center'}))
+
+    # ==============================================
+    # 8. MATRIKS PEMBOBOTAN DISTANDARISASI
+    # ==============================================
+    standardized_weight = weight_matrix.copy()
+    row_sums = standardized_weight.sum(axis=1)
+    standardized_weight = np.divide(standardized_weight, row_sums[:, np.newaxis],
+                                  where=row_sums[:, np.newaxis]!=0)
+
+    standardized_weight_df = pd.DataFrame(standardized_weight,
+                                       index=[f"From {s}" for s in unique_states],
+                                       columns=[f"To {s}" for s in unique_states])
+    print("\nMatriks Pembobotan Distandarisasi (Training):")
+    display(standardized_weight_df.style.set_properties(**{'text-align': 'center'}))
+
+    # ==============================================
+    # 9. DEFUZZIFIKASI
+    # ==============================================
+    middle_values = {row['Class Conversion']: row['Middle Value'] for _, row in intervals_df.iterrows()}
+
+    # Validasi unique states
+    print("\nValidasi States:")
+    print("Unique States:", unique_states)
+    print("Middle Values:", middle_values.keys())
+    print("State to Index:", state_to_idx.keys())
+
+    # Prediksi training dengan error handling
+    train_predictions = []
+    for i in range(len(train_fuzzification)-1):
+        current_state = train_fuzzification[i]
+
+        # Handle unknown state
+        if current_state not in state_to_idx:
+            print(f"Warning: State {current_state} not found in training, using first state as fallback")
+            current_state = unique_states[0]
+
+        current_idx = state_to_idx[current_state]
+
+        defuzzified_value = 0
+        for j, state in enumerate(unique_states):
+            defuzzified_value += standardized_weight[current_idx, j] * middle_values[state]
+
+        train_predictions.append(defuzzified_value)
+    train_predictions.insert(0, np.nan)  # Tambahkan NaN untuk prediksi pertama
+
+    # Prediksi testing dengan error handling
+    test_predictions = []
+    last_train_state = train_fuzzification[-1]
+
+    for i in range(len(test_fuzzification)):
+        # Handle unknown state
+        if last_train_state not in state_to_idx:
+            print(f"Warning: State {last_train_state} not found, using first state as fallback")
+            last_train_state = unique_states[0]
+
+        current_idx = state_to_idx[last_train_state]
+
+        defuzzified_value = 0
+        for j, state in enumerate(unique_states):
+            # Handle unknown state in middle_values
+            if state not in middle_values:
+                print(f"Warning: State {state} not in middle_values, skipping")
+                continue
+            defuzzified_value += standardized_weight[current_idx, j] * middle_values[state]
+
+        test_predictions.append(defuzzified_value)
+        last_train_state = test_fuzzification[i]  # Update state untuk prediksi berikutnya
+
+    # Validasi panjang array sebelum gabungkan
+    print("\nValidasi Panjang Array:")
+    print(f"Train Data: {len(train_data)}, Train Fuzz: {len(train_fuzzification)}, Train Pred: {len(train_predictions)}")
+    print(f"Test Data: {len(test_data)}, Test Fuzz: {len(test_fuzzification)}, Test Pred: {len(test_predictions)}")
+
+    # Pastikan panjang array sesuai
+    assert len(train_data) == len(train_fuzzification) == len(train_predictions)
+    assert len(test_data) == len(test_fuzzification) == len(test_predictions)
+
+    # Gabungkan hasil prediksi
+    all_data = np.concatenate((train_data, test_data))
+    all_fuzzification = train_fuzzification + test_fuzzification
+    all_predictions = train_predictions + test_predictions
+
+    # Buat DataFrame dengan memastikan semua array sama panjang
+    min_length = min(len(all_fuzzification), len(all_predictions), len(all_data))
+    defuzzification_df = pd.DataFrame({
+        'Current State': all_fuzzification[:min_length],
+        'Next State': (all_fuzzification[1:] + [np.nan])[:min_length],
+        'Hasil Prediksi': all_predictions[:min_length],
+        'Data Aktual': all_data[:min_length],
+        'Type': (['Training']*len(train_data) + ['Testing']*len(test_data))[:min_length]
+    })
+
+    print("\nTabel Defuzzifikasi (Training & Testing):")
+    display(defuzzification_df.style.set_properties(**{'text-align': 'center'}))
+
+    # ==============================================
+    # 10. HITUNG MAPE
+    # ==============================================
+    # Training MAPE
+    train_actual = defuzzification_df[defuzzification_df['Type']=='Training']['Data Aktual'].iloc[1:-1]
+    train_pred = defuzzification_df[defuzzification_df['Type']=='Training']['Hasil Prediksi'].iloc[1:-1]
+    train_mape = mean_absolute_percentage_error(train_actual, train_pred) * 100
+
+    # Testing MAPE
+    test_actual = defuzzification_df[defuzzification_df['Type']=='Testing']['Data Aktual']
+    test_pred = defuzzification_df[defuzzification_df['Type']=='Testing']['Hasil Prediksi']
+    test_mape = mean_absolute_percentage_error(test_actual, test_pred) * 100
+
+    print(f"\nMAPE Training: {train_mape:.2f}%")
+    print(f"MAPE Testing: {test_mape:.2f}%")
+
+    return {
         'intervals': intervals_df,
         'fuzzification': fuzzification_df,
         'flr': flr_df,
@@ -669,12 +573,13 @@ def fts_cheng_apso(data_column, dfi, params):
         'test_dates': test_dates,
         'test_actual': test_data,
         'test_pred': np.array(test_predictions),
-        'data_column': data_column
+        'data_column': data_column,
     }
-    except KeyError as e:
+	except KeyError as e:
         raise ValueError(f"Kolom '{data_column}' tidak ditemukan di dataframe. Kolom yang tersedia: {dfi.columns.tolist()}")
     except Exception as e:
         raise ValueError(f"Gagal memproses data: {str(e)}")
+
 
 # ==============================================
 # 11. PLOT PREDIKSI
@@ -714,7 +619,7 @@ def plot_result(results):
     return fig  # Kembalikan figure object
 
 # ==============================================
-# 12. PREDIKSI KE DEPAN
+# PREDIKSI 30 HARI KE DEPAN 
 # ==============================================
 def predict_next_30_days(results, start_date):
     """
@@ -746,16 +651,18 @@ def predict_next_30_days(results, start_date):
 
         # Update state berdasarkan matriks transisi
         if current_state in state_to_idx:
+
             current_idx = state_to_idx[current_state]
             if current_idx < standardized_weight.shape[0]:
                 next_state_idx = np.argmax(standardized_weight[current_idx, :])
-                current_state = unique_states[next_state_idx]
-
+                current_state = unique
+				
     return pd.DataFrame({
         'Tanggal': pred_dates,
         'Prediksi': predictions,
         'State': [current_state]*30  # State terakhir yang digunakan
-    })
+    })	
+
 
 import streamlit as st
 from io import BytesIO
