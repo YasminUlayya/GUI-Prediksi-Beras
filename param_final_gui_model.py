@@ -57,7 +57,7 @@ def preprocessing(df):
 
     return df_preprocessing
 
-    import numpy as np
+import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.metrics import mean_absolute_percentage_error
@@ -885,22 +885,22 @@ def show_model_page():
         col1, col2, col3, col4, col5, col6, col7, col8 = st.columns(8)
         with col1:
             n_particles = st.number_input("Jumlah Partikel", min_value=5, max_value=100, value=10)
-            max_iter = st.number_input("Maksimum Iterasi", min_value=50, max_value=2000, value=700)
+            max_iter = st.number_input("Maksimum Iterasi", min_value=50, max_value=2000, value=500)
         with col2:
             min_intervals = st.number_input("Min Interval Fuzzy", min_value=3, max_value=20, value=5)
             max_intervals = st.number_input("Max Interval Fuzzy", min_value=3, max_value=20, value=10)
         with col3:
             w_max = st.number_input("w_max", min_value=0.1, max_value=1.5, value=0.9, step=0.1)
         with col4:
-            w_min = st.number_input("w_min", min_value=0.1, max_value=1.5, value=0.2, step=0.1)
+            w_min = st.number_input("w_min", min_value=0.1, max_value=1.5, value=0.4, step=0.1)
         with col5:
             c1_max = st.number_input("c1_max", min_value=0.1, max_value=4.0, value=2.0, step=0.1)
         with col6:
-            c1_min = st.number_input("c1_min", min_value=0.1, max_value=4.0, value=0.5, step=0.1)
+            c1_min = st.number_input("c1_min", min_value=0.1, max_value=4.0, value=1.5, step=0.1)
         with col7:
             c2_max = st.number_input("c2_max", min_value=0.1, max_value=4.0, value=2.0, step=0.1)
         with col8:
-            c2_min = st.number_input("c2_min", min_value=0.1, max_value=4.0, value=0.5, step=0.1)
+            c2_min = st.number_input("c2_min", min_value=0.1, max_value=4.0, value=1.5, step=0.1)
 
     if st.button("🚀 Jalankan Model", type="primary", use_container_width=True):
         with st.spinner('Menjalankan model FTS-APSO...'):
