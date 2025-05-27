@@ -342,223 +342,221 @@ def fts_cheng_apso(data_column, dfi, params):
         print("\nInterval Optimal:", best_intervals)
 
 
+        # ==============================================
+        # 3. MEMBUAT TABEL INTERVAL
+        # ==============================================
+        intervals_table = []
+        for i in range(len(best_intervals)-1):
+            lower = best_intervals[i]
+            upper = best_intervals[i+1]
+            midpoint = (lower + upper) / 2
+            intervals_table.append({
+                'Ui': f'U{i+1}',
+                'Lower Limit': lower,
+                'Upper Limit': upper,
+                'Middle Value': midpoint,
+                'Class Conversion': f'A{i+1}'
+            })
 
-    # ==============================================
-    # 3. MEMBUAT TABEL INTERVAL
-    # ==============================================
-    intervals_table = []
-    for i in range(len(best_intervals)-1):
-        lower = best_intervals[i]
-        upper = best_intervals[i+1]
-        midpoint = (lower + upper) / 2
-        intervals_table.append({
-            'Ui': f'U{i+1}',
-            'Lower Limit': lower,
-            'Upper Limit': upper,
-            'Middle Value': midpoint,
-            'Class Conversion': f'A{i+1}'
-        })
+        intervals_df = pd.DataFrame(intervals_table)
+        
+		# ==============================================
+		# 4. FUZZIFIKASI DATA
+		# ==============================================
+		train_fuzzification = []
+		for value in train_data:
+			for idx, row in intervals_df.iterrows():
+				if row['Lower Limit'] <= value < row['Upper Limit']:
+					train_fuzzification.append(row['Class Conversion'])
+					break
+			else:
+				if value == intervals_df.iloc[-1]['Upper Limit']:
+					train_fuzzification.append(intervals_df.iloc[-1]['Class Conversion'])
 
-    intervals_df = pd.DataFrame(intervals_table)
-    print("\nTabel Interval:")
-    display(intervals_df.style.set_properties(**{'text-align': 'center'}))
+		test_fuzzification = []
+		for value in test_data:
+			for idx, row in intervals_df.iterrows():
+				if row['Lower Limit'] <= value < row['Upper Limit']:
+					test_fuzzification.append(row['Class Conversion'])
+					break
+			else:
+				if value == intervals_df.iloc[-1]['Upper Limit']:
+					test_fuzzification.append(intervals_df.iloc[-1]['Class Conversion'])
 
-    # ==============================================
-    # 4. FUZZIFIKASI DATA
-    # ==============================================
-    train_fuzzification = []
-    for value in train_data:
-        for idx, row in intervals_df.iterrows():
-            if row['Lower Limit'] <= value < row['Upper Limit']:
-                train_fuzzification.append(row['Class Conversion'])
-                break
-        else:
-            if value == intervals_df.iloc[-1]['Upper Limit']:
-                train_fuzzification.append(intervals_df.iloc[-1]['Class Conversion'])
+		# Gabungkan fuzzifikasi untuk FLR (training saja)
+		fuzzification_df = pd.DataFrame({
+			'Fi': [f'F{i+1}' for i in range(len(train_data))],
+			'Data Aktual': train_data,
+			'Fuzzification': train_fuzzification
+		})
+		print("\nTabel Fuzzifikasi (Training):")
+		display(fuzzification_df.style.set_properties(**{'text-align': 'center'}))
 
-    test_fuzzification = []
-    for value in test_data:
-        for idx, row in intervals_df.iterrows():
-            if row['Lower Limit'] <= value < row['Upper Limit']:
-                test_fuzzification.append(row['Class Conversion'])
-                break
-        else:
-            if value == intervals_df.iloc[-1]['Upper Limit']:
-                test_fuzzification.append(intervals_df.iloc[-1]['Class Conversion'])
+		# ==============================================
+		# 5. FUZZY LOGICAL RELATIONSHIP (FLR)
+		# ==============================================
+		flr = []
+		for i in range(len(train_fuzzification)-1):
+			flr.append(f"{train_fuzzification[i]} -> {train_fuzzification[i+1]}")
 
-    # Gabungkan fuzzifikasi untuk FLR (training saja)
-    fuzzification_df = pd.DataFrame({
-        'Fi': [f'F{i+1}' for i in range(len(train_data))],
-        'Data Aktual': train_data,
-        'Fuzzification': train_fuzzification
-    })
-    print("\nTabel Fuzzifikasi (Training):")
-    display(fuzzification_df.style.set_properties(**{'text-align': 'center'}))
+		flr_df = pd.DataFrame({
+			'Data Aktual': train_data[1:],
+			'Fuzzification': train_fuzzification[1:],
+			'FLR': flr
+		})
+		print("\nTabel FLR (Training):")
+		display(flr_df.style.set_properties(**{'text-align': 'center'}))
 
-    # ==============================================
-    # 5. FUZZY LOGICAL RELATIONSHIP (FLR)
-    # ==============================================
-    flr = []
-    for i in range(len(train_fuzzification)-1):
-        flr.append(f"{train_fuzzification[i]} -> {train_fuzzification[i+1]}")
+		# ==============================================
+		# 6. FUZZY LOGICAL RELATIONSHIP GROUPS (FLRG)
+		# ==============================================
+		unique_states = sorted(set(train_fuzzification))
+		flrg = {state: [] for state in unique_states}
 
-    flr_df = pd.DataFrame({
-        'Data Aktual': train_data[1:],
-        'Fuzzification': train_fuzzification[1:],
-        'FLR': flr
-    })
-    print("\nTabel FLR (Training):")
-    display(flr_df.style.set_properties(**{'text-align': 'center'}))
+		for rel in flr:
+			current, next_state = rel.split(' -> ')
+			if next_state not in flrg[current]:
+				flrg[current].append(next_state)
 
-    # ==============================================
-    # 6. FUZZY LOGICAL RELATIONSHIP GROUPS (FLRG)
-    # ==============================================
-    unique_states = sorted(set(train_fuzzification))
-    flrg = {state: [] for state in unique_states}
+		flrg_table = []
+		for i, (key, values) in enumerate(flrg.items()):
+			flrg_table.append({
+				'Group': f'G{i+1}',
+				'FLRG': f"{key} -> {', '.join(values)}" if values else f"{key} -> "
+			})
 
-    for rel in flr:
-        current, next_state = rel.split(' -> ')
-        if next_state not in flrg[current]:
-            flrg[current].append(next_state)
+		flrg_df = pd.DataFrame(flrg_table)
+		print("\nTabel FLRG (Training):")
+		display(flrg_df.style.set_properties(**{'text-align': 'center'}))
 
-    flrg_table = []
-    for i, (key, values) in enumerate(flrg.items()):
-        flrg_table.append({
-            'Group': f'G{i+1}',
-            'FLRG': f"{key} -> {', '.join(values)}" if values else f"{key} -> "
-        })
+		# ==============================================
+		# 7. MATRIKS PEMBOBOTAN
+		# ==============================================
+		weight_matrix = np.zeros((len(unique_states), len(unique_states)))
 
-    flrg_df = pd.DataFrame(flrg_table)
-    print("\nTabel FLRG (Training):")
-    display(flrg_df.style.set_properties(**{'text-align': 'center'}))
+		# Mapping state ke index
+		state_to_idx = {state: idx for idx, state in enumerate(unique_states)}
 
-    # ==============================================
-    # 7. MATRIKS PEMBOBOTAN
-    # ==============================================
-    weight_matrix = np.zeros((len(unique_states), len(unique_states)))
+		for rel in flr:
+			current, next_state = rel.split(' -> ')
+			weight_matrix[state_to_idx[current], state_to_idx[next_state]] += 1
 
-    # Mapping state ke index
-    state_to_idx = {state: idx for idx, state in enumerate(unique_states)}
+		weight_df = pd.DataFrame(weight_matrix,
+								index=[f"From {s}" for s in unique_states],
+								columns=[f"To {s}" for s in unique_states])
+		print("\nMatriks Pembobotan (Training):")
+		display(weight_df.style.set_properties(**{'text-align': 'center'}))
 
-    for rel in flr:
-        current, next_state = rel.split(' -> ')
-        weight_matrix[state_to_idx[current], state_to_idx[next_state]] += 1
+		# ==============================================
+		# 8. MATRIKS PEMBOBOTAN DISTANDARISASI
+		# ==============================================
+		standardized_weight = weight_matrix.copy()
+		row_sums = standardized_weight.sum(axis=1)
+		standardized_weight = np.divide(standardized_weight, row_sums[:, np.newaxis],
+									  where=row_sums[:, np.newaxis]!=0)
 
-    weight_df = pd.DataFrame(weight_matrix,
-                            index=[f"From {s}" for s in unique_states],
-                            columns=[f"To {s}" for s in unique_states])
-    print("\nMatriks Pembobotan (Training):")
-    display(weight_df.style.set_properties(**{'text-align': 'center'}))
+		standardized_weight_df = pd.DataFrame(standardized_weight,
+										   index=[f"From {s}" for s in unique_states],
+										   columns=[f"To {s}" for s in unique_states])
+		print("\nMatriks Pembobotan Distandarisasi (Training):")
+		display(standardized_weight_df.style.set_properties(**{'text-align': 'center'}))
 
-    # ==============================================
-    # 8. MATRIKS PEMBOBOTAN DISTANDARISASI
-    # ==============================================
-    standardized_weight = weight_matrix.copy()
-    row_sums = standardized_weight.sum(axis=1)
-    standardized_weight = np.divide(standardized_weight, row_sums[:, np.newaxis],
-                                  where=row_sums[:, np.newaxis]!=0)
+		# ==============================================
+		# 9. DEFUZZIFIKASI
+		# ==============================================
+		middle_values = {row['Class Conversion']: row['Middle Value'] for _, row in intervals_df.iterrows()}
 
-    standardized_weight_df = pd.DataFrame(standardized_weight,
-                                       index=[f"From {s}" for s in unique_states],
-                                       columns=[f"To {s}" for s in unique_states])
-    print("\nMatriks Pembobotan Distandarisasi (Training):")
-    display(standardized_weight_df.style.set_properties(**{'text-align': 'center'}))
+		# Validasi unique states
+		print("\nValidasi States:")
+		print("Unique States:", unique_states)
+		print("Middle Values:", middle_values.keys())
+		print("State to Index:", state_to_idx.keys())
 
-    # ==============================================
-    # 9. DEFUZZIFIKASI
-    # ==============================================
-    middle_values = {row['Class Conversion']: row['Middle Value'] for _, row in intervals_df.iterrows()}
+		# Prediksi training dengan error handling
+		train_predictions = []
+		for i in range(len(train_fuzzification)-1):
+			current_state = train_fuzzification[i]
 
-    # Validasi unique states
-    print("\nValidasi States:")
-    print("Unique States:", unique_states)
-    print("Middle Values:", middle_values.keys())
-    print("State to Index:", state_to_idx.keys())
+			# Handle unknown state
+			if current_state not in state_to_idx:
+				print(f"Warning: State {current_state} not found in training, using first state as fallback")
+				current_state = unique_states[0]
 
-    # Prediksi training dengan error handling
-    train_predictions = []
-    for i in range(len(train_fuzzification)-1):
-        current_state = train_fuzzification[i]
+			current_idx = state_to_idx[current_state]
 
-        # Handle unknown state
-        if current_state not in state_to_idx:
-            print(f"Warning: State {current_state} not found in training, using first state as fallback")
-            current_state = unique_states[0]
+			defuzzified_value = 0
+			for j, state in enumerate(unique_states):
+				defuzzified_value += standardized_weight[current_idx, j] * middle_values[state]
 
-        current_idx = state_to_idx[current_state]
+			train_predictions.append(defuzzified_value)
+		train_predictions.insert(0, np.nan)  # Tambahkan NaN untuk prediksi pertama
 
-        defuzzified_value = 0
-        for j, state in enumerate(unique_states):
-            defuzzified_value += standardized_weight[current_idx, j] * middle_values[state]
+		# Prediksi testing dengan error handling
+		test_predictions = []
+		last_train_state = train_fuzzification[-1]
 
-        train_predictions.append(defuzzified_value)
-    train_predictions.insert(0, np.nan)  # Tambahkan NaN untuk prediksi pertama
+		for i in range(len(test_fuzzification)):
+			# Handle unknown state
+			if last_train_state not in state_to_idx:
+				print(f"Warning: State {last_train_state} not found, using first state as fallback")
+				last_train_state = unique_states[0]
 
-    # Prediksi testing dengan error handling
-    test_predictions = []
-    last_train_state = train_fuzzification[-1]
+			current_idx = state_to_idx[last_train_state]
 
-    for i in range(len(test_fuzzification)):
-        # Handle unknown state
-        if last_train_state not in state_to_idx:
-            print(f"Warning: State {last_train_state} not found, using first state as fallback")
-            last_train_state = unique_states[0]
+			defuzzified_value = 0
+			for j, state in enumerate(unique_states):
+				# Handle unknown state in middle_values
+				if state not in middle_values:
+					print(f"Warning: State {state} not in middle_values, skipping")
+					continue
+				defuzzified_value += standardized_weight[current_idx, j] * middle_values[state]
 
-        current_idx = state_to_idx[last_train_state]
+			test_predictions.append(defuzzified_value)
+			last_train_state = test_fuzzification[i]  # Update state untuk prediksi berikutnya
 
-        defuzzified_value = 0
-        for j, state in enumerate(unique_states):
-            # Handle unknown state in middle_values
-            if state not in middle_values:
-                print(f"Warning: State {state} not in middle_values, skipping")
-                continue
-            defuzzified_value += standardized_weight[current_idx, j] * middle_values[state]
+		# Validasi panjang array sebelum gabungkan
+		print("\nValidasi Panjang Array:")
+		print(f"Train Data: {len(train_data)}, Train Fuzz: {len(train_fuzzification)}, Train Pred: {len(train_predictions)}")
+		print(f"Test Data: {len(test_data)}, Test Fuzz: {len(test_fuzzification)}, Test Pred: {len(test_predictions)}")
 
-        test_predictions.append(defuzzified_value)
-        last_train_state = test_fuzzification[i]  # Update state untuk prediksi berikutnya
+		# Pastikan panjang array sesuai
+		assert len(train_data) == len(train_fuzzification) == len(train_predictions)
+		assert len(test_data) == len(test_fuzzification) == len(test_predictions)
 
-    # Validasi panjang array sebelum gabungkan
-    print("\nValidasi Panjang Array:")
-    print(f"Train Data: {len(train_data)}, Train Fuzz: {len(train_fuzzification)}, Train Pred: {len(train_predictions)}")
-    print(f"Test Data: {len(test_data)}, Test Fuzz: {len(test_fuzzification)}, Test Pred: {len(test_predictions)}")
+		# Gabungkan hasil prediksi
+		all_data = np.concatenate((train_data, test_data))
+		all_fuzzification = train_fuzzification + test_fuzzification
+		all_predictions = train_predictions + test_predictions
 
-    # Pastikan panjang array sesuai
-    assert len(train_data) == len(train_fuzzification) == len(train_predictions)
-    assert len(test_data) == len(test_fuzzification) == len(test_predictions)
+		# Buat DataFrame dengan memastikan semua array sama panjang
+		min_length = min(len(all_fuzzification), len(all_predictions), len(all_data))
+		defuzzification_df = pd.DataFrame({
+			'Current State': all_fuzzification[:min_length],
+			'Next State': (all_fuzzification[1:] + [np.nan])[:min_length],
+			'Hasil Prediksi': all_predictions[:min_length],
+			'Data Aktual': all_data[:min_length],
+			'Type': (['Training']*len(train_data) + ['Testing']*len(test_data))[:min_length]
+		})
 
-    # Gabungkan hasil prediksi
-    all_data = np.concatenate((train_data, test_data))
-    all_fuzzification = train_fuzzification + test_fuzzification
-    all_predictions = train_predictions + test_predictions
+		print("\nTabel Defuzzifikasi (Training & Testing):")
+		display(defuzzification_df.style.set_properties(**{'text-align': 'center'}))
 
-    # Buat DataFrame dengan memastikan semua array sama panjang
-    min_length = min(len(all_fuzzification), len(all_predictions), len(all_data))
-    defuzzification_df = pd.DataFrame({
-        'Current State': all_fuzzification[:min_length],
-        'Next State': (all_fuzzification[1:] + [np.nan])[:min_length],
-        'Hasil Prediksi': all_predictions[:min_length],
-        'Data Aktual': all_data[:min_length],
-        'Type': (['Training']*len(train_data) + ['Testing']*len(test_data))[:min_length]
-    })
+		# ==============================================
+		# 10. HITUNG MAPE
+		# ==============================================
+		# Training MAPE
+		train_actual = defuzzification_df[defuzzification_df['Type']=='Training']['Data Aktual'].iloc[1:-1]
+		train_pred = defuzzification_df[defuzzification_df['Type']=='Training']['Hasil Prediksi'].iloc[1:-1]
+		train_mape = mean_absolute_percentage_error(train_actual, train_pred) * 100
 
-    print("\nTabel Defuzzifikasi (Training & Testing):")
-    display(defuzzification_df.style.set_properties(**{'text-align': 'center'}))
+		# Testing MAPE
+		test_actual = defuzzification_df[defuzzification_df['Type']=='Testing']['Data Aktual']
+		test_pred = defuzzification_df[defuzzification_df['Type']=='Testing']['Hasil Prediksi']
+		test_mape = mean_absolute_percentage_error(test_actual, test_pred) * 100
 
-    # ==============================================
-    # 10. HITUNG MAPE
-    # ==============================================
-    # Training MAPE
-    train_actual = defuzzification_df[defuzzification_df['Type']=='Training']['Data Aktual'].iloc[1:-1]
-    train_pred = defuzzification_df[defuzzification_df['Type']=='Training']['Hasil Prediksi'].iloc[1:-1]
-    train_mape = mean_absolute_percentage_error(train_actual, train_pred) * 100
-
-    # Testing MAPE
-    test_actual = defuzzification_df[defuzzification_df['Type']=='Testing']['Data Aktual']
-    test_pred = defuzzification_df[defuzzification_df['Type']=='Testing']['Hasil Prediksi']
-    test_mape = mean_absolute_percentage_error(test_actual, test_pred) * 100
-
-    print(f"\nMAPE Training: {train_mape:.2f}%")
-    print(f"MAPE Testing: {test_mape:.2f}%")
+		print(f"\nMAPE Training: {train_mape:.2f}%")
+		print(f"MAPE Testing: {test_mape:.2f}%")
+        
         # Hasil akhir
         return {
             'intervals': intervals_df,
