@@ -57,7 +57,7 @@ def preprocessing(df):
 
     return df_preprocessing
 
-import numpy as np
+    import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.metrics import mean_absolute_percentage_error
@@ -116,7 +116,10 @@ def fts_cheng_apso(data_column, dfi, params):
         # Inisialisasi partikel dengan jumlah interval acak (antara min_intervals-max_intervals)
         particles = []
         velocities = []
-
+       
+        # Cari jumlah dimensi maksimum yang mungkin
+        max_possible_dimensions = max_intervals - 1
+        max_actual_dimensions = 0
 
         # Inisialisasi partikel dan simpan data untuk tabel
         table_data = []
