@@ -725,7 +725,7 @@ def show_welcome_page():
         }
     </style>
 
-    <h1 class="centered-title">🌾 PREDIKSI HARGA BERAS KOTA SURABAYA</h1>
+    <h1 class="centered-title">🌾 PREDIKSI HARGA BERAS<br>KOTA SURABAYA</h1>
     """, unsafe_allow_html=True)
 
     # Membuat container khusus untuk tombol
