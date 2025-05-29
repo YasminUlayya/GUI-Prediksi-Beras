@@ -1098,7 +1098,7 @@ def show_evaluation_page():
     st.pyplot(fig)
 
 def show_prediction_page():
-    st.header("🔮 Hasil Prediksi")
+    st.header("🔮 Prediksi ke Depan")
 
     # Validasi session state
     if not st.session_state.get('model_run', False) or st.session_state.results is None:
