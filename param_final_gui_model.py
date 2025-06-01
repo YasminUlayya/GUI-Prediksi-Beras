@@ -101,11 +101,17 @@ def fts_cheng_apso(data_column, dfi, params):
         # ==============================================
         # 2. MENCARI INTERVAL OPTIMAL DENGAN APSO
         # ==============================================
+        # Hitung jumlah interval dasar
+        N = len(train_data)
+        n_intervals_sturges = int(1 + 3.322 * np.log10(N))
+
+        # Tambahkan variasi interval (4 di atas, 3 di bawah)
+        min_intervals = max(3, n_intervals_sturges - 3)  # Minimal 3 interval
+        max_intervals = n_intervals_sturges + 4
+
         # Gunakan semua parameter dari dictionary params
         n_particles = params['n_particles']
         max_iter = params['max_iter']
-        min_intervals = params['min_intervals']
-        max_intervals = params['max_intervals']
         w_max = params['w_max']
         w_min = params['w_min']
         c1_max = params['c1_max']
@@ -116,23 +122,50 @@ def fts_cheng_apso(data_column, dfi, params):
         # Inisialisasi partikel dengan jumlah interval acak (antara min_intervals-max_intervals)
         particles = []
         velocities = []
-       
-        # Cari jumlah dimensi maksimum yang mungkin
-        max_possible_dimensions = max_intervals - 1
-        max_actual_dimensions = 0
 
-        # Inisialisasi partikel dan simpan data untuk tabel
+        # Hitung distribusi partikel per jumlah interval
+        interval_counts = np.arange(min_intervals, max_intervals + 1)
+        particles_per_interval = n_particles // len(interval_counts)
+        remainder = n_particles % len(interval_counts)
+
+        print("\nDistribusi Partikel per Jumlah Interval:")
+        dist_table = []
+        for i, count in enumerate(interval_counts):
+            p_count = particles_per_interval + (1 if i < remainder else 0)
+            dist_table.append({'Jumlah Interval': count, 'Jumlah Partikel': p_count})
+        display(pd.DataFrame(dist_table).style.set_properties(**{'text-align': 'center'}))
+
+        # Inisialisasi partikel
         table_data = []
-        for i in range(n_particles):
-            num_intervals = np.random.randint(min_intervals, max_intervals + 1)
-            cut_points = np.sort(np.random.uniform(U_min, U_max, num_intervals-1))
-            particles.append(cut_points)
-            velocities.append(np.zeros_like(cut_points))
+        particle_counter = 0
 
-            # Update dimensi aktual maksimum
-            current_dimensions = len(cut_points)
-            if current_dimensions > max_actual_dimensions:
-                max_actual_dimensions = current_dimensions
+        for num_intervals in interval_counts:
+            p_count = particles_per_interval + (1 if num_intervals - min_intervals < remainder else 0)
+
+            for _ in range(p_count):
+                particle_counter += 1
+
+                if num_intervals == n_intervals_sturges:
+                    # Untuk interval Sturges, buat interval yang seragam
+                    cut_points = np.linspace(U_min, U_max, num_intervals + 1)[1:-1]
+                elif num_intervals < n_intervals_sturges:
+                    # Untuk interval lebih sedikit dari Sturges
+                    step = (U_max - U_min) / (num_intervals + 1)
+                    cut_points = np.array([U_min + (i+1)*step for i in range(num_intervals-1)])
+                else:
+                    # Untuk interval lebih banyak dari Sturges
+                    base_points = np.linspace(U_min, U_max, n_intervals_sturges + 1)[1:-1]
+                    additional_points = np.random.uniform(U_min, U_max, num_intervals - n_intervals_sturges)
+                    cut_points = np.sort(np.concatenate([base_points, additional_points]))
+
+                # Tambahkan noise kecil untuk variasi
+                noise = np.random.uniform(-0.1, 0.1, size=len(cut_points)) * (U_max - U_min)/n_intervals_sturges
+                cut_points = np.clip(cut_points + noise, U_min, U_max)
+                cut_points = np.sort(cut_points)
+
+                particles.append(cut_points)
+                velocities.append(np.zeros_like(cut_points))
+
 
 
         # 2. Perhitungan Fitness dan Inisialisasi pBest/gBest
@@ -351,7 +384,7 @@ def fts_cheng_apso(data_column, dfi, params):
             })
 
         intervals_df = pd.DataFrame(intervals_table)
-        
+
         # ==============================================
         # 4. FUZZIFIKASI DATA
         # ==============================================
@@ -384,7 +417,7 @@ def fts_cheng_apso(data_column, dfi, params):
         print("\nTabel Fuzzifikasi (Training):")
         display(fuzzification_df.style.set_properties(**{'text-align': 'center'}))
 
-          
+
         # ==============================================
         # 5. FUZZY LOGICAL RELATIONSHIP (FLR)
         # ==============================================
@@ -549,7 +582,7 @@ def fts_cheng_apso(data_column, dfi, params):
 
         print(f"\nMAPE Training: {train_mape:.2f}%")
         print(f"MAPE Testing: {test_mape:.2f}%")
-        
+
         # Hasil akhir
         return {
             'intervals': intervals_df,
@@ -609,7 +642,7 @@ def plot_result(results):
     return fig  # Kembalikan figure object
 
 # ==============================================
-# PREDIKSI 30 HARI KE DEPAN 
+# PREDIKSI 30 HARI KE DEPAN
 # ==============================================
 def predict_next_30_days(results, start_date):
     """
@@ -646,12 +679,12 @@ def predict_next_30_days(results, start_date):
             if current_idx < standardized_weight.shape[0]:
                 next_state_idx = np.argmax(standardized_weight[current_idx, :])
                 current_state = unique
-				
+
     return pd.DataFrame({
         'Tanggal': pred_dates,
         'Prediksi': predictions,
         'State': [current_state]*30  # State terakhir yang digunakan
-    })	
+    })
 
 import streamlit as st
 from io import BytesIO
@@ -725,7 +758,7 @@ def show_welcome_page():
         }
     </style>
 
-    <h1 class="centered-title">🌾 PREDIKSI HARGA BERAS<br>KOTA SURABAYA</h1>
+    <h1 class="centered-title">🌾 PREDIKSI HARGA BERAS KOTA SURABAYA</h1>
     """, unsafe_allow_html=True)
 
     # Membuat container khusus untuk tombol
@@ -882,25 +915,22 @@ def show_model_page():
             d2 = st.number_input("Konstanta d2", min_value=100, value=100, step=1)
 
     with st.expander("🧮 Parameter APSO", expanded=True):
-        col1, col2, col3, col4, col5, col6, col7, col8 = st.columns(8)
+        col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
         with col1:
             n_particles = st.number_input("Jumlah Partikel", min_value=5, max_value=100, value=10)
-            max_iter = st.number_input("Maksimum Iterasi", min_value=50, max_value=2000, value=500)
+            max_iter = st.number_input("Maksimum Iterasi", min_value=50, max_value=2000, value=700)
         with col2:
-            min_intervals = st.number_input("Min Interval Fuzzy", min_value=3, max_value=20, value=5)
-            max_intervals = st.number_input("Max Interval Fuzzy", min_value=3, max_value=20, value=10)
-        with col3:
             w_max = st.number_input("w_max", min_value=0.1, max_value=1.5, value=0.9, step=0.1)
+        with col3:
+            w_min = st.number_input("w_min", min_value=0.1, max_value=1.5, value=0.2, step=0.1)
         with col4:
-            w_min = st.number_input("w_min", min_value=0.1, max_value=1.5, value=0.4, step=0.1)
-        with col5:
             c1_max = st.number_input("c1_max", min_value=0.1, max_value=4.0, value=2.0, step=0.1)
+        with col5:
+            c1_min = st.number_input("c1_min", min_value=0.1, max_value=4.0, value=0.5, step=0.1)
         with col6:
-            c1_min = st.number_input("c1_min", min_value=0.1, max_value=4.0, value=1.5, step=0.1)
-        with col7:
             c2_max = st.number_input("c2_max", min_value=0.1, max_value=4.0, value=2.0, step=0.1)
-        with col8:
-            c2_min = st.number_input("c2_min", min_value=0.1, max_value=4.0, value=1.5, step=0.1)
+        with col7:
+            c2_min = st.number_input("c2_min", min_value=0.1, max_value=4.0, value=0.5, step=0.1)
 
     if st.button("🚀 Jalankan Model", type="primary", use_container_width=True):
         with st.spinner('Menjalankan model FTS-APSO...'):
@@ -1098,7 +1128,7 @@ def show_evaluation_page():
     st.pyplot(fig)
 
 def show_prediction_page():
-    st.header("🔮 Prediksi ke Depan")
+    st.header("🔮 Hasil Prediksi")
 
     # Validasi session state
     if not st.session_state.get('model_run', False) or st.session_state.results is None:
