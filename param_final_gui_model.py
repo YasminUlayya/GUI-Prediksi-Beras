@@ -945,8 +945,6 @@ def show_model_page():
                     'd2': d2,
                     'n_particles': n_particles,
                     'max_iter': max_iter,
-                    'min_intervals': min_intervals,
-                    'max_intervals': max_intervals,
                     'w_max': w_max,
                     'w_min': w_min,
                     'c1_max': c1_max,
