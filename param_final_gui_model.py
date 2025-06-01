@@ -758,7 +758,7 @@ def show_welcome_page():
         }
     </style>
 
-    <h1 class="centered-title">🌾 PREDIKSI HARGA BERAS KOTA SURABAYA</h1>
+    <h1 class="centered-title">🌾 PREDIKSI HARGA BERAS<br>KOTA SURABAYA</h1>
     """, unsafe_allow_html=True)
 
     # Membuat container khusus untuk tombol
@@ -922,15 +922,15 @@ def show_model_page():
         with col2:
             w_max = st.number_input("w_max", min_value=0.1, max_value=1.5, value=0.9, step=0.1)
         with col3:
-            w_min = st.number_input("w_min", min_value=0.1, max_value=1.5, value=0.2, step=0.1)
+            w_min = st.number_input("w_min", min_value=0.1, max_value=1.5, value=0.4, step=0.1)
         with col4:
             c1_max = st.number_input("c1_max", min_value=0.1, max_value=4.0, value=2.0, step=0.1)
         with col5:
-            c1_min = st.number_input("c1_min", min_value=0.1, max_value=4.0, value=0.5, step=0.1)
+            c1_min = st.number_input("c1_min", min_value=0.1, max_value=4.0, value=1.5, step=0.1)
         with col6:
             c2_max = st.number_input("c2_max", min_value=0.1, max_value=4.0, value=2.0, step=0.1)
         with col7:
-            c2_min = st.number_input("c2_min", min_value=0.1, max_value=4.0, value=0.5, step=0.1)
+            c2_min = st.number_input("c2_min", min_value=0.1, max_value=4.0, value=1.5, step=0.1)
 
     if st.button("🚀 Jalankan Model", type="primary", use_container_width=True):
         with st.spinner('Menjalankan model FTS-APSO...'):
