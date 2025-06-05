@@ -805,7 +805,7 @@ def show_upload_page():
     st.markdown("---")
 
     # Upload file
-    uploaded_file = st.file_uploader("Upload file Excel/CSV (2 kolom, salah satunya 'Tanggal')",
+    uploaded_file = st.file_uploader("Upload file Excel (2 kolom, salah satunya 'Tanggal')",
                                    type=["xlsx", "csv"])
 
     if uploaded_file is not None:
