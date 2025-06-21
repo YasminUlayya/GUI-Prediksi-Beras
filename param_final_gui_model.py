@@ -896,6 +896,7 @@ def main():
 
 def show_upload_page():
     st.header("📤 Upload Data Time Series")
+    st.markdown("---")
 
     st.markdown("""
     **Panduan Upload:**
@@ -977,7 +978,7 @@ def show_upload_page():
 
 def show_model_page():
     st.header("⚙️ Eksekusi Model FTS-APSO")
-
+    st.markdown("---")
     if not st.session_state.df_uploaded:
         st.warning("Silakan upload data terlebih dahulu")
         return
@@ -1136,7 +1137,7 @@ def plot_result(results):
 
 def show_visualization_page():
     st.header("📊 Visualisasi Hasil")
-
+    st.markdown("---")
     # Validasi session state
     if not st.session_state.get('model_run', False) or st.session_state.results is None:
         st.warning("Silakan jalankan model terlebih dahulu di menu Eksekusi Model")
@@ -1167,7 +1168,7 @@ def show_visualization_page():
 
 def show_evaluation_page():
     st.header("📈 Evaluasi Model")
-
+    st.markdown("---")
     # Validasi session state
     if not st.session_state.get('model_run', False) or st.session_state.results is None:
         st.warning("Silakan jalankan model terlebih dahulu di menu Eksekusi Model")
@@ -1229,7 +1230,7 @@ def show_evaluation_page():
 
 def show_prediction_page():
     st.header("🔮 Hasil Prediksi")
-
+    st.markdown("---")
     # Validasi session state
     if not st.session_state.get('model_run', False) or st.session_state.results is None:
         st.warning("Silakan jalankan model terlebih dahulu di menu Eksekusi Model")
