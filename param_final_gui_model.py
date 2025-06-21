@@ -785,8 +785,8 @@ def show_welcome_page():
     """, unsafe_allow_html=True)
 
     # Tombol di tengah
-    col1, col2, col3 = st.columns([1,2,1])
-    with col2:
+    col1= st.columns(1)
+    with col1:
         if st.button("Mulai Aplikasi", key="welcome_button"):
             st.session_state.current_page = "show_upload_page"
             st.rerun()
