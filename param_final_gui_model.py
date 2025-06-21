@@ -863,7 +863,13 @@ def main_app():
                 }
             }
         )
-    
+        # Footer di bagian bawah sidebar
+        st.markdown("""
+            <div class="sidebar-footer">
+                <strong>Prediksi Harga Beras Kota Surabaya</strong><br>
+                <em>© 2025 - Mahasiswa Sains Data</em>
+            </div>
+        
     # Jalankan fungsi halaman yang dipilih
     pages[selected]()
     
@@ -1296,20 +1302,6 @@ def show_prediction_page():
     else:
         st.info("Silakan klik tombol 'Prediksi Harga yang Akan Datang' untuk melihat hasil prediksi")
 
-# Footer
-st.sidebar.markdown("""
-    <style>
-    .footer {
-        color: #ffffff !important;
-        font-size: 14px;
-        margin-top: 20px;
-    }
-    </style>
-    <div class="footer">
-    <strong>Prediksi Harga Beras Kota Surabaya</strong><br>
-    <em>© 2025 - Mahasiswa Sains Data</em>
-    </div>
-""", unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
