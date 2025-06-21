@@ -773,92 +773,92 @@ def show_welcome_page():
             st.rerun()
 
 def main_app():
-st.markdown("""
-    <style>
-        /* Warna background utama sidebar */
-        [data-testid="stSidebar"] {
-            background-color: #800000 !important;
-        }
-        
-        /* Warna teks di sidebar */
-        .sidebar .sidebar-content {
-            color: #ffffff !important;
-        }
-        
-        /* Warna untuk semua teks di sidebar */
-        .st-emotion-cache-10oheav p, 
-        .st-emotion-cache-10oheav span,
-        .st-emotion-cache-10oheav div {
-            color: #ffffff !important;
-        }
-        
-        /* Warna garis pemisah */
-        .st-emotion-cache-1dp5vir {
-            border-top: 1px solid #a00000 !important;
-        }
-        
-        /* Hilangkan ikon menu dan atur warna teks Main Menu */
-        div[data-testid="stSidebarNav"] > ul > li > div > div > div > div:nth-child(1) > svg {
-            display: none !important;
-        }
-        
-        div[data-testid="stSidebarNav"] > ul > li > div > div > div > div:nth-child(2) {
-            color: white !important;
-            font-weight: bold;
-        }
-        
-        /* Style untuk option menu */
-        .st-emotion-cache-1aehpvj {
-            color: white !important;
-        }
-    </style>
-""", unsafe_allow_html=True)
-
-# Mapping halaman dan fungsi
-pages = {
-    "Upload Data": show_upload_page,
-    "Eksekusi Model": show_model_page,
-    "Visualisasi": show_visualization_page,
-    "Evaluasi": show_evaluation_page,
-    "Prediksi ke Depan": show_prediction_page,
-}
-
-# Menu navigasi di sidebar dengan option_menu
-with st.sidebar:
-    selected = option_menu(
-        menu_title=None,  # Menghilangkan title default
-        options=list(pages.keys()),
-        icons=["cloud-upload", "cpu", "bar-chart", "clipboard-data", "graph-up"],
-        menu_icon="cast",
-        default_index=0,
-        styles={
-            "container": {
-                "padding": "5px", 
-                "background-color": "#800000"
-            },
-            "icon": {
-                "color": "#ffffff",
-                "font-size": "14px"
-            }, 
-            "nav-link": {
-                "font-size": "14px", 
-                "text-align": "left", 
-                "margin": "0px", 
-                "--hover-color": "#a00000",
-                "color": "#ffffff"
-            },
-            "nav-link-selected": {
-                "background-color": "#600000",
-                "color": "white"
-            },
-        }
-    )
+    st.markdown("""
+        <style>
+            /* Warna background utama sidebar */
+            [data-testid="stSidebar"] {
+                background-color: #800000 !important;
+            }
+            
+            /* Warna teks di sidebar */
+            .sidebar .sidebar-content {
+                color: #ffffff !important;
+            }
+            
+            /* Warna untuk semua teks di sidebar */
+            .st-emotion-cache-10oheav p, 
+            .st-emotion-cache-10oheav span,
+            .st-emotion-cache-10oheav div {
+                color: #ffffff !important;
+            }
+            
+            /* Warna garis pemisah */
+            .st-emotion-cache-1dp5vir {
+                border-top: 1px solid #a00000 !important;
+            }
+            
+            /* Hilangkan ikon menu dan atur warna teks Main Menu */
+            div[data-testid="stSidebarNav"] > ul > li > div > div > div > div:nth-child(1) > svg {
+                display: none !important;
+            }
+            
+            div[data-testid="stSidebarNav"] > ul > li > div > div > div > div:nth-child(2) {
+                color: white !important;
+                font-weight: bold;
+            }
+            
+            /* Style untuk option menu */
+            .st-emotion-cache-1aehpvj {
+                color: white !important;
+            }
+        </style>
+    """, unsafe_allow_html=True)
     
-    # Menambahkan judul "Main Menu" secara manual dengan style yang diinginkan
-    st.markdown("<h2 style='color: white;'>Main Menu</h2>", unsafe_allow_html=True)
-
-# Jalankan fungsi halaman yang dipilih
-pages[selected]()
+    # Mapping halaman dan fungsi
+    pages = {
+        "Upload Data": show_upload_page,
+        "Eksekusi Model": show_model_page,
+        "Visualisasi": show_visualization_page,
+        "Evaluasi": show_evaluation_page,
+        "Prediksi ke Depan": show_prediction_page,
+    }
+    
+    # Menu navigasi di sidebar dengan option_menu
+    with st.sidebar:
+        selected = option_menu(
+            menu_title=None,  # Menghilangkan title default
+            options=list(pages.keys()),
+            icons=["cloud-upload", "cpu", "bar-chart", "clipboard-data", "graph-up"],
+            menu_icon="cast",
+            default_index=0,
+            styles={
+                "container": {
+                    "padding": "5px", 
+                    "background-color": "#800000"
+                },
+                "icon": {
+                    "color": "#ffffff",
+                    "font-size": "14px"
+                }, 
+                "nav-link": {
+                    "font-size": "14px", 
+                    "text-align": "left", 
+                    "margin": "0px", 
+                    "--hover-color": "#a00000",
+                    "color": "#ffffff"
+                },
+                "nav-link-selected": {
+                    "background-color": "#600000",
+                    "color": "white"
+                },
+            }
+        )
+        
+        # Menambahkan judul "Main Menu" secara manual dengan style yang diinginkan
+        st.markdown("<h2 style='color: white;'>Main Menu</h2>", unsafe_allow_html=True)
+    
+    # Jalankan fungsi halaman yang dipilih
+    pages[selected]()
     
 def main():
     initialize_session_state()  # Panggil inisialisasi di awal
