@@ -977,6 +977,31 @@ def show_upload_page():
             st.error("Pastikan format file benar dan kolom sesuai")
 
 def show_model_page():
+    # Tambahkan CSS untuk styling tombol
+    st.markdown("""
+    <style>
+        /* Warna dasar tombol Jalankan Model */
+        div.stButton > button:first-child {
+            background-color: #737373
+            color: white;
+            border: none;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        /* Efek hover */
+        div.stButton > button:first-child:hover {
+            background-color: #4c4c4c
+            transform: scale(1.02);
+        }
+        
+        /* Efek aktif */
+        div.stButton > button:first-child:active {
+            background-color: #282828;
+            transform: scale(0.98);
+        }
+    </style>
+    """, unsafe_allow_html=True)
     st.header("⚙️ Eksekusi Model FTS-APSO")
     st.markdown("---")
     if not st.session_state.df_uploaded:
