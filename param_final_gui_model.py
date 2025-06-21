@@ -774,7 +774,7 @@ def show_welcome_page():
 
 def main_app():
     # CSS untuk mengubah seluruh sidebar menjadi maroon
-    st.markdown("""
+st.markdown("""
         <style>
         /* Warna background utama sidebar */
         [data-testid="stSidebar"] {
@@ -797,6 +797,16 @@ def main_app():
         .st-emotion-cache-1dp5vir {
             border-top: 1px solid #a00000 !important;
         }
+        
+        /* Remove icon next to Main Menu */
+        .st-emotion-cache-1v7f65g {
+            display: none !important;
+        }
+        
+        /* Make Main Menu text white */
+        .st-emotion-cache-1aehpvj {
+            color: white !important;
+        }
         </style>
     """, unsafe_allow_html=True)
 
@@ -817,28 +827,28 @@ def main_app():
             icons=["cloud-upload", "cpu", "bar-chart", "clipboard-data", "graph-up"],
             menu_icon="cast",
             default_index=0,
-        styles={
-            "container": {
-                "padding": "5px", 
-                "background-color": "#800000"  # Warna maroon
-            },
-            "icon": {
-                "color": "#ffffff",  # Warna ikon putih
-                "font-size": "14px"
-            }, 
-            "nav-link": {
-                "font-size": "14px", 
-                "text-align": "left", 
-                "margin": "0px", 
-                "--hover-color": "#a00000",  # Warna hover lebih terang
-                "color": "#ffffff"  # Warna teks putih
-            },
-            "nav-link-selected": {
-                "background-color": "#600000",  # Warna item terpilih lebih gelap
-                "color": "white"
-            },
-        }
-    )
+            styles={
+                "container": {
+                    "padding": "5px", 
+                    "background-color": "#800000"  # Warna maroon
+                },
+                "icon": {
+                    "color": "#ffffff",  # Warna ikon putih
+                    "font-size": "14px"
+                }, 
+                "nav-link": {
+                    "font-size": "14px", 
+                    "text-align": "left", 
+                    "margin": "0px", 
+                    "--hover-color": "#a00000",  # Warna hover lebih terang
+                    "color": "#ffffff"  # Warna teks putih
+                },
+                "nav-link-selected": {
+                    "background-color": "#600000",  # Warna item terpilih lebih gelap
+                    "color": "white"
+                },
+            }
+        )
     
     # Jalankan fungsi halaman yang dipilih
     pages[selected]()
