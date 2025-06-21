@@ -773,6 +773,7 @@ def show_welcome_page():
             st.rerun()
 
 def main_app():
+    st.sidebar.image(load_image("logo.png"), use_column_width=True)
     # Mapping halaman dan fungsi
     pages = {
         "Upload Data": show_upload_page,
@@ -790,18 +791,28 @@ def main_app():
             icons=["cloud-upload", "cpu", "bar-chart", "clipboard-data", "graph-up"],
             menu_icon="cast",
             default_index=0,
-            styles={
-                "container": {"padding": "5px", "background-color": "#f8f9fa"},
-                "icon": {"color": "orange", "font-size": "14px"}, 
-                "nav-link": {
-                    "font-size": "14px", 
-                    "text-align": "left", 
-                    "margin": "0px", 
-                    "--hover-color": "#eee"
-                },
-                "nav-link-selected": {"background-color": "#0d6efd"},
-            }
-        )
+        styles={
+            "container": {
+                "padding": "5px", 
+                "background-color": "#2c3e50"  # Warna background sidebar
+            },
+            "icon": {
+                "color": "#ecf0f1",  # Warna ikon lebih terang 
+                "font-size": "14px"
+            }, 
+            "nav-link": {
+                "font-size": "14px", 
+                "text-align": "left", 
+                "margin": "0px", 
+                "--hover-color": "#34495e",  # Warna hover
+                "color": "#ecf0f1"  # Warna teks normal
+            },
+            "nav-link-selected": {
+                "background-color": "#3498db",  # Warna item terpilih
+                "color": "white"  # Warna teks terpilih
+            },
+        }
+    )
     
     # Jalankan fungsi halaman yang dipilih
     pages[selected]()
