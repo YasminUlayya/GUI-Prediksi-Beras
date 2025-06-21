@@ -731,27 +731,24 @@ def initialize_session_state():
 def show_welcome_page():
     st.markdown("""
     <style>
-        .welcome-container {
-            background-color: #f0f0f0;
-            padding: 2rem;
-            border-radius: 10px;
+        .centered {
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-        .logo-container {
-            margin-bottom: 1.5rem;
-        }
-        .centered-title {
-            text-align: center;
-            margin-bottom: 2rem;
+        .title {
             color: #333333;
             font-size: 2.2rem;
+            margin: 1rem 0;
         }
-        .button-container {
-            display: flex;
-            justify-content: center;
-            margin-top: 3rem;
+        .description {
+            color: #555555;
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
         }
-        div.stButton > button:first-child {
+        div.stButton > button {
             background-color: #800000 !important;
             color: white !important;
             border: none !important;
@@ -759,51 +756,40 @@ def show_welcome_page():
             font-size: 18px;
             width: 220px;
             height: 50px;
-            margin: 0 auto;
-            display: block;
             border-radius: 8px;
             transition: all 0.3s ease;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
-        div.stButton > button:first-child:hover {
+        div.stButton > button:hover {
             background-color: #600000 !important;
             transform: scale(1.05);
             box-shadow: 0 6px 12px rgba(0,0,0,0.15);
         }
-        div.stButton > button:first-child:active {
+        div.stButton > button:active {
             background-color: #390000 !important;
             transform: scale(0.98);
         }
     </style>
     """, unsafe_allow_html=True)
 
-    # Container utama
-    with st.container():
-        st.markdown('<div class="welcome-container">', unsafe_allow_html=True)
-        
-        # Logo
-        st.markdown('<div class="logo-container">', unsafe_allow_html=True)
-        st.image("logo.png", width=200)  # Sesuaikan path dan ukuran logo
-        st.markdown('</div>', unsafe_allow_html=True)
-        
-        # Judul
-        st.markdown('<h1 class="centered-title">Sistem Prediksi Harga Beras</h1>', unsafe_allow_html=True)
-        
-        # Deskripsi (opsional)
-        st.markdown("""
-        <p style='text-align: center; color: #555555; font-size: 1.1rem;'>
-            Aplikasi ini menggunakan model Fuzzy Time Series Cheng-Adaptive Particle Swarm Optimization untuk memprediksi harga beras di Surabaya
-        </p>
-        """, unsafe_allow_html=True)
-        
-        # Tombol
-        st.markdown('<div class="button-container">', unsafe_allow_html=True)
-        if st.button("Mulai Aplikasi"):
-            st.session_state.current_page = "Upload Data"
+    # Logo di tengah
+    st.image("logo.png", width=200) 
+    
+    # Judul dan deskripsi
+    st.markdown('<h1 class="centered title">Sistem Prediksi Harga Beras</h1>', unsafe_allow_html=True)
+    st.markdown("""
+    <p class="centered description">
+        Aplikasi ini menggunakan model Fuzzy Time Series Cheng-Adaptive Particle Swarm Optimization 
+        untuk memprediksi harga beras di Surabaya
+    </p>
+    """, unsafe_allow_html=True)
+
+    # Tombol di tengah
+    col1, col2, col3 = st.columns([1,2,1])
+    with col2:
+        if st.button("Mulai Aplikasi", key="welcome_button"):
+            st.session_state.current_page = "show_upload_page"
             st.rerun()
-        st.markdown('</div>', unsafe_allow_html=True)
-        
-        st.markdown('</div>', unsafe_allow_html=True)
         
 def main_app():
     st.markdown("""
