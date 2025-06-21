@@ -753,7 +753,7 @@ def show_welcome_page():
                 """
                 <div style="text-align: center;">
                     <!-- Logo (ganti dengan path logo Anda) -->
-                    <img src="https://via.placeholder.com/150" width="150" style="margin-bottom: 30px;">
+                    <img src="logo.png" width="150" style="margin-bottom: 30px;">
                     
                     <!-- Judul -->
                     <h1 style="color: #333333; margin-bottom: 20px;">Sistem Prediksi Harga Beras Kota Surabaya</h1>
