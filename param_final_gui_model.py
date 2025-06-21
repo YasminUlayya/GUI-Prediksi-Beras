@@ -731,23 +731,43 @@ def initialize_session_state():
 def show_welcome_page():
     st.markdown("""
     <style>
-        .title {
+        /* Set background color for the entire page */
+        .stApp {
+            background-color: #f0f0f0 !important;
+        }
+        
+        /* Center alignment for all elements */
+        .centered-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             text-align: center;
+            padding: 2rem 0;
+        }
+        
+        /* Title styling */
+        .title {
             color: #333333;
             font-size: 2.2rem;
             margin: 1rem 0;
         }
+        
+        /* Description styling */
         .description {
-            text-align: center;
             color: #555555;
             font-size: 1.1rem;
             margin: 0 auto 2rem auto;
             max-width: 600px;
+            text-align: center;
         }
-        .stButton {
-            display: flex;
-            justify-content: center;
+        
+        /* Button container */
+        .button-container {
+            margin-top: 1.5rem;
         }
+        
+        /* Button styling */
         div.stButton > button {
             background-color: #800000 !important;
             color: white !important;
@@ -759,12 +779,15 @@ def show_welcome_page():
             border-radius: 8px;
             transition: all 0.3s ease;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin: 0 auto;
         }
+        
         div.stButton > button:hover {
             background-color: #600000 !important;
             transform: scale(1.05);
             box-shadow: 0 6px 12px rgba(0,0,0,0.15);
         }
+        
         div.stButton > button:active {
             background-color: #390000 !important;
             transform: scale(0.98);
@@ -772,24 +795,31 @@ def show_welcome_page():
     </style>
     """, unsafe_allow_html=True)
 
-    # Logo di tengah (otomatis center di Streamlit)
+    # Main content container
+    st.markdown('<div class="centered-content">', unsafe_allow_html=True)
+    
+    # Logo - centered
     st.image("logo.png", width=200)
     
-    # Judul
+    # Title
     st.markdown('<h1 class="title">Sistem Prediksi Harga Beras</h1>', unsafe_allow_html=True)
     
-    # Deskripsi
+    # Description
     st.markdown("""
     <p class="description">
         Aplikasi ini menggunakan model Fuzzy Time Series Cheng-Adaptive Particle Swarm Optimization 
         untuk memprediksi harga beras di Surabaya
     </p>
     """, unsafe_allow_html=True)
-
-    # Tombol di tengah (cara paling sederhana)
+    
+    # Button container
+    st.markdown('<div class="button-container">', unsafe_allow_html=True)
     if st.button("Mulai Aplikasi", key="welcome_button"):
         st.session_state.current_page = "show_upload_page"
         st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)
+    
+    st.markdown('</div>', unsafe_allow_html=True)
         
 def main_app():
     st.markdown("""
