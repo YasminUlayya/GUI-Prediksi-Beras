@@ -816,11 +816,15 @@ def main_app():
                 color: white !important;
                 font-weight: bold;
             }
+
+            /* Style untuk logo */
+            .sidebar-logo {
+                padding: 1rem;
+                text-align: center;
+            }
         </style>
     """, unsafe_allow_html=True)
-    
-    # Logo
-    st.sidebar.image(load_image("logo.png"), use_column_width=True)
+
     
     # Mapping halaman dan fungsi
     pages = {
@@ -833,6 +837,11 @@ def main_app():
     
     # Menu navigasi di sidebar dengan option_menu
     with st.sidebar:
+        # Tambahkan logo di atas navigasi
+        st.markdown('<div class="sidebar-logo">', unsafe_allow_html=True)
+        st.image("logo.png", use_column_width=True)  # Pastikan file logo.png ada di direktori yang benar
+        st.markdown('</div>', unsafe_allow_html=True)
+        
         selected = option_menu(
             menu_title="Main Menu",
             options=list(pages.keys()),
