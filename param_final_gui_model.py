@@ -785,30 +785,25 @@ def main_app():
                 color: #ffffff !important;
             }
             
-            /* Warna untuk semua teks di sidebar */
-            .st-emotion-cache-10oheav p, 
-            .st-emotion-cache-10oheav span,
-            .st-emotion-cache-10oheav div {
-                color: #ffffff !important;
-            }
-            
-            /* Warna garis pemisah */
-            .st-emotion-cache-1dp5vir {
-                border-top: 1px solid #a00000 !important;
-            }
-            
-            /* Hilangkan ikon menu dan atur warna teks Main Menu */
-            div[data-testid="stSidebarNav"] > ul > li > div > div > div > div:nth-child(1) > svg {
+            /* Hilangkan ikon di sebelah Main Menu */
+            .st-emotion-cache-1v7f65g {
                 display: none !important;
             }
             
-            div[data-testid="stSidebarNav"] > ul > li > div > div > div > div:nth-child(2) {
+            /* Warna teks Main Menu */
+            .st-emotion-cache-1aehpvj {
                 color: white !important;
                 font-weight: bold;
             }
             
-            /* Style untuk option menu */
-            .st-emotion-cache-1aehpvj {
+            /* Style untuk menu items */
+            .st-emotion-cache-1pbsqtx a {
+                color: white !important;
+            }
+            
+            /* Style untuk menu item yang aktif */
+            .st-emotion-cache-1pbsqtx a[aria-current="page"] {
+                background-color: #600000 !important;
                 color: white !important;
             }
         </style>
@@ -826,10 +821,10 @@ def main_app():
     # Menu navigasi di sidebar dengan option_menu
     with st.sidebar:
         selected = option_menu(
-            menu_title=None,  # Menghilangkan title default
+            menu_title="Main Menu",  # Pertahankan Main Menu di sini
             options=list(pages.keys()),
             icons=["cloud-upload", "cpu", "bar-chart", "clipboard-data", "graph-up"],
-            menu_icon="cast",
+            menu_icon="cast",  # Ikon untuk menu utama (bisa dihilangkan dengan None)
             default_index=0,
             styles={
                 "container": {
@@ -853,9 +848,6 @@ def main_app():
                 },
             }
         )
-        
-        # Menambahkan judul "Main Menu" secara manual dengan style yang diinginkan
-        st.markdown("<h2 style='color: white;'>Main Menu</h2>", unsafe_allow_html=True)
     
     # Jalankan fungsi halaman yang dipilih
     pages[selected]()
