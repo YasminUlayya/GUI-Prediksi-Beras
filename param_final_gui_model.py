@@ -693,6 +693,7 @@ from datetime import datetime, timedelta
 import time
 import pandas as pd
 import matplotlib.pyplot as plt
+from streamlit_option_menu import option_menu
 
 # Panggil set_page_config sebagai perintah pertama Streamlit
 st.set_page_config(
