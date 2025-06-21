@@ -812,10 +812,13 @@ def show_welcome_page():
     </p>
     """, unsafe_allow_html=True)
     
-    # Button container
+    # Button container with navigation
     st.markdown('<div class="button-container">', unsafe_allow_html=True)
-    if st.button("Mulai Aplikasi", key="welcome_button"):
-        st.session_state.current_page = "show_upload_page"
+    if st.button("Mulai Aplikasi", 
+                 key="welcome_button",
+                 use_container_width=True):
+        st.session_state.show_main_app = True  # Ganti status untuk menampilkan aplikasi utama
+        st.session_state.current_page = "show_upload_page"  # Set halaman tujuan
         st.rerun()
     st.markdown('</div>', unsafe_allow_html=True)
     
