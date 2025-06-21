@@ -773,32 +773,32 @@ def show_welcome_page():
             st.rerun()
 
 def main_app():
-# CSS untuk mengubah seluruh sidebar menjadi maroon
-st.markdown("""
-    <style>
-    /* Warna background utama sidebar */
-    [data-testid="stSidebar"] {
-        background-color: #800000 !important;
-    }
-    
-    /* Warna teks di sidebar */
-    .sidebar .sidebar-content {
-        color: #ffffff !important;
-    }
-    
-    /* Warna untuk semua teks di sidebar */
-    .st-emotion-cache-10oheav p, 
-    .st-emotion-cache-10oheav span,
-    .st-emotion-cache-10oheav div {
-        color: #ffffff !important;
-    }
-    
-    /* Warna garis pemisah */
-    .st-emotion-cache-1dp5vir {
-        border-top: 1px solid #a00000 !important;
-    }
-    </style>
-""", unsafe_allow_html=True)
+    # CSS untuk mengubah seluruh sidebar menjadi maroon
+    st.markdown("""
+        <style>
+        /* Warna background utama sidebar */
+        [data-testid="stSidebar"] {
+            background-color: #800000 !important;
+        }
+        
+        /* Warna teks di sidebar */
+        .sidebar .sidebar-content {
+            color: #ffffff !important;
+        }
+        
+        /* Warna untuk semua teks di sidebar */
+        .st-emotion-cache-10oheav p, 
+        .st-emotion-cache-10oheav span,
+        .st-emotion-cache-10oheav div {
+            color: #ffffff !important;
+        }
+        
+        /* Warna garis pemisah */
+        .st-emotion-cache-1dp5vir {
+            border-top: 1px solid #a00000 !important;
+        }
+        </style>
+    """, unsafe_allow_html=True)
 
     # Mapping halaman dan fungsi
     pages = {
