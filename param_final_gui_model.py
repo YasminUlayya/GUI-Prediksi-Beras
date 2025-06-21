@@ -773,6 +773,33 @@ def show_welcome_page():
             st.rerun()
 
 def main_app():
+# CSS untuk mengubah seluruh sidebar menjadi maroon
+st.markdown("""
+    <style>
+    /* Warna background utama sidebar */
+    [data-testid="stSidebar"] {
+        background-color: #800000 !important;
+    }
+    
+    /* Warna teks di sidebar */
+    .sidebar .sidebar-content {
+        color: #ffffff !important;
+    }
+    
+    /* Warna untuk semua teks di sidebar */
+    .st-emotion-cache-10oheav p, 
+    .st-emotion-cache-10oheav span,
+    .st-emotion-cache-10oheav div {
+        color: #ffffff !important;
+    }
+    
+    /* Warna garis pemisah */
+    .st-emotion-cache-1dp5vir {
+        border-top: 1px solid #a00000 !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
     # Mapping halaman dan fungsi
     pages = {
         "Upload Data": show_upload_page,
@@ -793,22 +820,22 @@ def main_app():
         styles={
             "container": {
                 "padding": "5px", 
-                "background-color": "#800000"  # Warna background sidebar
+                "background-color": "#800000"  # Warna maroon
             },
             "icon": {
-                "color": "#ecf0f1",  # Warna ikon lebih terang 
+                "color": "#ffffff",  # Warna ikon putih
                 "font-size": "14px"
             }, 
             "nav-link": {
                 "font-size": "14px", 
                 "text-align": "left", 
                 "margin": "0px", 
-                "--hover-color": "#34495e",  # Warna hover
-                "color": "#ecf0f1"  # Warna teks normal
+                "--hover-color": "#a00000",  # Warna hover lebih terang
+                "color": "#ffffff"  # Warna teks putih
             },
             "nav-link-selected": {
-                "background-color": "#3498db",  # Warna item terpilih
-                "color": "white"  # Warna teks terpilih
+                "background-color": "#600000",  # Warna item terpilih lebih gelap
+                "color": "white"
             },
         }
     )
@@ -1246,11 +1273,19 @@ def show_prediction_page():
         st.info("Silakan klik tombol 'Prediksi Harga yang Akan Datang' untuk melihat hasil prediksi")
 
 # Footer
-st.sidebar.markdown("---")
 st.sidebar.markdown("""
-**Prediksi Harga Beras Kota Surabaya**
-*© 2025 - Mahasiswa Sains Data*
-""")
+    <style>
+    .footer {
+        color: #ffffff !important;
+        font-size: 14px;
+        margin-top: 20px;
+    }
+    </style>
+    <div class="footer">
+    <strong>Prediksi Harga Beras Kota Surabaya</strong><br>
+    <em>© 2025 - Mahasiswa Sains Data</em>
+    </div>
+""", unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
