@@ -978,30 +978,40 @@ def show_upload_page():
 
 def show_model_page():
     # Tambahkan CSS untuk styling tombol
-    st.markdown("""
+st.markdown("""
     <style>
         /* Warna dasar tombol Jalankan Model */
         div.stButton > button:first-child {
-            background-color: #737373
-            color: white;
-            border: none;
-            font-weight: bold;
-            transition: all 0.3s;
+            background-color: #737373 !important;
+            color: white !important;
+            border: none !important;
+            font-weight: bold !important;
+            transition: all 0.3s !important;
         }
         
         /* Efek hover */
         div.stButton > button:first-child:hover {
-            background-color: #4c4c4c
-            transform: scale(1.02);
+            background-color: #4c4c4c !important;
+            transform: scale(1.02) !important;
         }
         
         /* Efek aktif */
         div.stButton > button:first-child:active {
-            background-color: #282828;
-            transform: scale(0.98);
+            background-color: #282828 !important;
+            transform: scale(0.98) !important;
+        }
+        
+        /* Tombol primary khusus */
+        div.stButton > button.primary {
+            background-color: #737373 !important;
+        }
+        
+        div.stButton > button.primary:hover {
+            background-color: #4c4c4c !important;
         }
     </style>
     """, unsafe_allow_html=True)
+
     st.header("⚙️ Eksekusi Model FTS-APSO")
     st.markdown("---")
     if not st.session_state.df_uploaded:
