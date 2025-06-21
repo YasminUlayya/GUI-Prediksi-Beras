@@ -775,14 +775,9 @@ def show_welcome_page():
 def main_app():
     st.markdown("""
         <style>
-            /* Warna background utama sidebar */
+            /* Warna background sidebar */
             [data-testid="stSidebar"] {
                 background-color: #800000 !important;
-            }
-            
-            /* Warna teks di sidebar */
-            .sidebar .sidebar-content {
-                color: #ffffff !important;
             }
             
             /* Hilangkan ikon di sebelah Main Menu */
@@ -790,10 +785,11 @@ def main_app():
                 display: none !important;
             }
             
-            /* Warna teks Main Menu */
+            /* Warna teks Main Menu menjadi putih */
             .st-emotion-cache-1aehpvj {
                 color: white !important;
                 font-weight: bold;
+                font-size: 1.2rem !important;
             }
             
             /* Style untuk menu items */
@@ -805,6 +801,16 @@ def main_app():
             .st-emotion-cache-1pbsqtx a[aria-current="page"] {
                 background-color: #600000 !important;
                 color: white !important;
+            }
+            
+            /* Alternatif jika class name berubah */
+            div[data-testid="stSidebarNav"] ul li div div div div:nth-child(1) svg {
+                display: none !important;
+            }
+            
+            div[data-testid="stSidebarNav"] ul li div div div div:nth-child(2) {
+                color: white !important;
+                font-weight: bold;
             }
         </style>
     """, unsafe_allow_html=True)
@@ -821,10 +827,10 @@ def main_app():
     # Menu navigasi di sidebar dengan option_menu
     with st.sidebar:
         selected = option_menu(
-            menu_title="Main Menu",  # Pertahankan Main Menu di sini
+            menu_title="Main Menu",
             options=list(pages.keys()),
             icons=["cloud-upload", "cpu", "bar-chart", "clipboard-data", "graph-up"],
-            menu_icon="cast",  # Ikon untuk menu utama (bisa dihilangkan dengan None)
+            menu_icon=None,  # Pastikan tidak ada ikon menu
             default_index=0,
             styles={
                 "container": {
@@ -833,7 +839,8 @@ def main_app():
                 },
                 "icon": {
                     "color": "#ffffff",
-                    "font-size": "14px"
+                    "font-size": "14px",
+                    "display": "none"  # Tambahkan ini untuk memastikan ikon tidak muncul
                 }, 
                 "nav-link": {
                     "font-size": "14px", 
@@ -846,6 +853,10 @@ def main_app():
                     "background-color": "#600000",
                     "color": "white"
                 },
+                "menu-title": {
+                    "color": "white !important",  # Tambahkan style khusus untuk menu title
+                    "font-weight": "bold"
+                }
             }
         )
     
