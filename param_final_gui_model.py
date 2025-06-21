@@ -731,44 +731,53 @@ def initialize_session_state():
 def show_welcome_page():
     st.markdown("""
     <style>
-        /* Set background color for the entire page */
+        /* Background color for the entire page */
         .stApp {
             background-color: #f0f0f0 !important;
         }
         
-        /* Center alignment for all elements */
-        .centered-content {
+        /* Main container to center everything */
+        .main-container {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            min-height: 80vh;
+            padding: 2rem;
             text-align: center;
-            padding: 2rem 0;
+        }
+        
+        /* Logo styling */
+        .logo {
+            margin-bottom: 1.5rem;
         }
         
         /* Title styling */
         .title {
             color: #333333;
             font-size: 2.2rem;
-            margin: 1rem 0;
+            margin-bottom: 1rem;
+            font-weight: bold;
+        }
+        
+        /* Subtitle styling */
+        .subtitle {
+            color: #555555;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
         }
         
         /* Description styling */
         .description {
             color: #555555;
             font-size: 1.1rem;
-            margin: 0 auto 2rem auto;
             max-width: 600px;
-            text-align: center;
-        }
-        
-        /* Button container */
-        .button-container {
-            margin-top: 1.5rem;
+            margin: 0 auto 2rem auto;
+            line-height: 1.6;
         }
         
         /* Button styling */
-        div.stButton > button {
+        .stButton > button {
             background-color: #800000 !important;
             color: white !important;
             border: none !important;
@@ -782,42 +791,43 @@ def show_welcome_page():
             margin: 0 auto;
         }
         
-        div.stButton > button:hover {
+        .stButton > button:hover {
             background-color: #600000 !important;
             transform: scale(1.05);
             box-shadow: 0 6px 12px rgba(0,0,0,0.15);
         }
         
-        div.stButton > button:active {
+        .stButton > button:active {
             background-color: #390000 !important;
             transform: scale(0.98);
         }
     </style>
     """, unsafe_allow_html=True)
 
-    # Main content container
-    st.markdown('<div class="centered-content">', unsafe_allow_html=True)
+    # Main container
+    st.markdown('<div class="main-container">', unsafe_allow_html=True)
     
-    # Logo - centered
+    # Logo
+    st.markdown('<div class="logo">', unsafe_allow_html=True)
     st.image("logo.png", width=200)
+    st.markdown('</div>', unsafe_allow_html=True)
     
     # Title
-    st.markdown('<h1 class="title">Sistem Prediksi Harga Beras</h1>', unsafe_allow_html=True)
+    st.markdown('<div class="title">Ricecracle</div>', unsafe_allow_html=True)
+    st.markdown('<div class="subtitle">Sistem Prediksi Harga Beras</div>', unsafe_allow_html=True)
     
     # Description
     st.markdown("""
-    <p class="description">
+    <div class="description">
         Aplikasi ini menggunakan model Fuzzy Time Series Cheng-Adaptive Particle Swarm Optimization 
         untuk memprediksi harga beras di Surabaya
-    </p>
+    </div>
     """, unsafe_allow_html=True)
     
-    # Button container
-    st.markdown('<div class="button-container">', unsafe_allow_html=True)
+    # Button
     if st.button("Mulai Aplikasi", key="welcome_button"):
         st.session_state.current_page = "show_upload_page"
         st.rerun()
-    st.markdown('</div>', unsafe_allow_html=True)
     
     st.markdown('</div>', unsafe_allow_html=True)
         
