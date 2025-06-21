@@ -728,74 +728,98 @@ def initialize_session_state():
     if 'column_info' not in st.session_state:
         st.session_state.column_info = None
 
-import streamlit as st
-
-import streamlit as st
-
 def show_welcome_page():
-    # Set background color
-    st.markdown(
-        """
-        <style>
+    st.markdown("""
+    <style>
+        /* Set background color for the entire page */
         .stApp {
-            background-color: #f0f0f0;
+            background-color: #f0f0f0 !important;
         }
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
+        
+        /* Center alignment for all elements */
+        .centered-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem 0;
+        }
+        
+        /* Title styling */
+        .title {
+            color: #333333;
+            font-size: 2.2rem;
+            margin: 1rem 0;
+        }
+        
+        /* Description styling */
+        .description {
+            color: #555555;
+            font-size: 1.1rem;
+            margin: 0 auto 2rem auto;
+            max-width: 600px;
+            text-align: center;
+        }
+        
+        /* Button container */
+        .button-container {
+            margin-top: 1.5rem;
+        }
+        
+        /* Button styling */
+        div.stButton > button {
+            background-color: #800000 !important;
+            color: white !important;
+            border: none !important;
+            font-weight: bold;
+            font-size: 18px;
+            width: 220px;
+            height: 50px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin: 0 auto;
+        }
+        
+        div.stButton > button:hover {
+            background-color: #600000 !important;
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        
+        div.stButton > button:active {
+            background-color: #390000 !important;
+            transform: scale(0.98);
+        }
+    </style>
+    """, unsafe_allow_html=True)
 
-    # Center content using columns
-    col1, col2, col3 = st.columns([1, 6, 1])
-
-    with col2:
-        # Logo
-        st.image("logo.png", width=150, use_column_width=False)
-
-        # Title
-        st.markdown(
-            "<h1 style='text-align: center; color: #333333; margin-bottom: 20px;'>"
-            "Sistem Prediksi Harga Beras Kota Surabaya</h1>", 
-            unsafe_allow_html=True
-        )
-
-        # Description
-        st.markdown(
-            """
-            <p style='text-align: center; color: #555555; margin-bottom: 30px;'>
-                Aplikasi ini menggunakan model Fuzzy Time Series Cheng-Adaptive Particle Swarm Optimization<br>
-                untuk memprediksi harga beras di Surabaya
-            </p>
-            """,
-            unsafe_allow_html=True
-        )
-
-        # Button CSS
-        st.markdown(
-            """
-            <style>
-            div.stButton > button:first-child {
-                background-color: #600000 !important;
-                color: white !important;
-                border: none;
-                border-radius: 8px;
-                padding: 10px 20px;
-                display: block;
-                margin: 0 auto;
-            }
-            div.stButton > button:first-child:hover {
-                background-color: #800000 !important;
-            }
-            </style>
-            """,
-            unsafe_allow_html=True
-        )
-
-        # Button with unique key
-        if st.button("Mulai Aplikasi", key="unique_start_button"):
-            st.session_state.page = "main"
-
-show_welcome_page()
+    # Main content container
+    st.markdown('<div class="centered-content">', unsafe_allow_html=True)
+    
+    # Logo - centered
+    st.image("logo.png", width=200)
+    
+    # Title
+    st.markdown('<h1 class="title">Sistem Prediksi Harga Beras</h1>', unsafe_allow_html=True)
+    
+    # Description
+    st.markdown("""
+    <p class="description">
+        Aplikasi ini menggunakan model Fuzzy Time Series Cheng-Adaptive Particle Swarm Optimization 
+        untuk memprediksi harga beras di Surabaya
+    </p>
+    """, unsafe_allow_html=True)
+    
+    # Button container
+    st.markdown('<div class="button-container">', unsafe_allow_html=True)
+    if st.button("Mulai Aplikasi", key="welcome_button"):
+        st.session_state.current_page = "show_upload_page"
+        st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)
+    
+    st.markdown('</div>', unsafe_allow_html=True)
         
 def main_app():
     st.markdown("""
