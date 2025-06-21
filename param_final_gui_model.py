@@ -743,31 +743,41 @@ def show_welcome_page():
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 2rem 0;
+            min-height: 80vh;
+            padding: 2rem;
+            margin: 0 auto;
+            max-width: 800px;
+        }
+        
+        /* Logo container */
+        .logo-container {
+            margin-bottom: 2rem;
         }
         
         /* Title styling */
         .title {
             color: #333333;
             font-size: 2.2rem;
-            margin: 1rem 0;
+            margin-bottom: 1.5rem;
         }
         
         /* Description styling */
         .description {
             color: #555555;
             font-size: 1.1rem;
-            margin: 0 auto 2rem auto;
-            max-width: 600px;
-            text-align: center;
+            margin-bottom: 2.5rem;
+            line-height: 1.6;
         }
         
         /* Button container */
         .button-container {
-            margin-top: 1.5rem;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-top: 1rem;
         }
         
-        /* Button styling */
+        /* Button styling - UNCHANGED */
         div.stButton > button {
             background-color: #800000 !important;
             color: white !important;
@@ -795,16 +805,18 @@ def show_welcome_page():
     </style>
     """, unsafe_allow_html=True)
 
-    # Main content container
+    # Main content container - centered vertically and horizontally
     st.markdown('<div class="centered-content">', unsafe_allow_html=True)
     
-    # Logo - centered
+    # Logo container - centered
+    st.markdown('<div class="logo-container">', unsafe_allow_html=True)
     st.image("logo.png", width=200)
+    st.markdown('</div>', unsafe_allow_html=True)
     
-    # Title
+    # Title - centered
     st.markdown('<h1 class="title">Sistem Prediksi Harga Beras</h1>', unsafe_allow_html=True)
     
-    # Description
+    # Description - centered
     st.markdown("""
     <p class="description">
         Aplikasi ini menggunakan model Fuzzy Time Series Cheng-Adaptive Particle Swarm Optimization 
@@ -812,13 +824,13 @@ def show_welcome_page():
     </p>
     """, unsafe_allow_html=True)
     
-    # Button container with navigation
+    # Button container with navigation - centered
     st.markdown('<div class="button-container">', unsafe_allow_html=True)
     if st.button("Mulai Aplikasi", 
                  key="welcome_button",
                  use_container_width=True):
-        st.session_state.show_main_app = True  # Ganti status untuk menampilkan aplikasi utama
-        st.session_state.current_page = "show_upload_page"  # Set halaman tujuan
+        st.session_state.show_main_app = True
+        st.session_state.current_page = "show_upload_page"
         st.rerun()
     st.markdown('</div>', unsafe_allow_html=True)
     
