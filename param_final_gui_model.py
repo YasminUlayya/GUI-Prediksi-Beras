@@ -794,7 +794,7 @@ def main_app():
         styles={
             "container": {
                 "padding": "5px", 
-                "background-color": "#2c3e50"  # Warna background sidebar
+                "background-color": "#800000"  # Warna background sidebar
             },
             "icon": {
                 "color": "#ecf0f1",  # Warna ikon lebih terang 
