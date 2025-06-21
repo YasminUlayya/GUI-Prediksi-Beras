@@ -747,8 +747,10 @@ def show_welcome_page():
     col1, col2, col3 = st.columns([1, 6, 1])
 
     with col2:
-        # Logo (ganti dengan path logo Anda)
-        st.image("logo.png", width=150, use_column_width=False)  # Pastikan file logo.png ada di direktori yang sama
+        # Logo
+        st.markdown('<div class="sidebar-logo">', unsafe_allow_html=True)
+        st.image("logo.png", use_container_width=True)
+        st.markdown('</div>', unsafe_allow_html=True)
 
         # Judul (rata tengah dengan markdown)
         st.markdown(
