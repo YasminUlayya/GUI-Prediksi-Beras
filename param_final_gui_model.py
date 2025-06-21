@@ -777,7 +777,7 @@ def main_app():
         <style>
             /* Main background color */
             .stApp {
-                background-color: #ffffe0 !important;
+                background-color: #f0f0f0 !important;
             }
             /* Warna background sidebar */
             [data-testid="stSidebar"] {
@@ -1015,7 +1015,7 @@ def show_model_page():
         with col7:
             c2_min = st.number_input("c2_min", min_value=0.1, max_value=4.0, value=1.5, step=0.1)
 
-    if st.button("🚀 Jalankan Model", type="primary", use_container_width=True):
+    if st.button("Jalankan Model", type="primary", use_container_width=True):
         with st.spinner('Menjalankan model FTS-APSO...'):
             try:
                 # Preprocessing data
