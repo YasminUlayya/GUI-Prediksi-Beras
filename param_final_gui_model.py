@@ -731,47 +731,80 @@ def initialize_session_state():
 def show_welcome_page():
     st.markdown("""
     <style>
+        .welcome-container {
+            background-color: #f0f0f0;
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .logo-container {
+            margin-bottom: 1.5rem;
+        }
         .centered-title {
             text-align: center;
-            margin-bottom: 50px;
-        }
-        div.stButton > button:first-child {
-            background-color: #FFD700 !important;
-            color: black !important;
-            border: none !important;
-            font-weight: bold;
-            font-size: 18px;
-            width: 200px;
-            height: 50px;
-            margin: 0 auto;
-            display: block;
-            border-radius: 5px;
-            transition: all 0.3s;
-        }
-        div.stButton > button:first-child:hover {
-            background-color: #FFC000 !important;
-            transform: scale(1.05);
+            margin-bottom: 2rem;
+            color: #333333;
+            font-size: 2.2rem;
         }
         .button-container {
             display: flex;
             justify-content: center;
-            margin-top: 100px;
+            margin-top: 3rem;
+        }
+        div.stButton > button:first-child {
+            background-color: #800000 !important;
+            color: white !important;
+            border: none !important;
+            font-weight: bold;
+            font-size: 18px;
+            width: 220px;
+            height: 50px;
+            margin: 0 auto;
+            display: block;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        div.stButton > button:first-child:hover {
+            background-color: #600000 !important;
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        div.stButton > button:first-child:active {
+            background-color: #390000 !important;
+            transform: scale(0.98);
         }
     </style>
-
-    <h1 class="centered-title">🌾 PREDIKSI HARGA BERAS<br>KOTA SURABAYA</h1>
     """, unsafe_allow_html=True)
 
-    # Membuat container khusus untuk tombol
-    col1, col2, col3 = st.columns([1,2,1])
-
-    with col2:
-        if st.button("START",
-                    key="start_button",
-                    use_container_width=True):
-            st.session_state.show_main_app = True
+    # Container utama
+    with st.container():
+        st.markdown('<div class="welcome-container">', unsafe_allow_html=True)
+        
+        # Logo
+        st.markdown('<div class="logo-container">', unsafe_allow_html=True)
+        st.image("logo.png", width=200)  # Sesuaikan path dan ukuran logo
+        st.markdown('</div>', unsafe_allow_html=True)
+        
+        # Judul
+        st.markdown('<h1 class="centered-title">Sistem Prediksi Harga Beras</h1>', unsafe_allow_html=True)
+        
+        # Deskripsi (opsional)
+        st.markdown("""
+        <p style='text-align: center; color: #555555; font-size: 1.1rem;'>
+            Aplikasi ini menggunakan model Fuzzy Time Series Cheng-Adaptive Particle Swarm Optimization untuk memprediksi harga beras di Surabaya
+        </p>
+        """, unsafe_allow_html=True)
+        
+        # Tombol
+        st.markdown('<div class="button-container">', unsafe_allow_html=True)
+        if st.button("Mulai Aplikasi"):
+            st.session_state.current_page = "Upload Data"
             st.rerun()
-
+        st.markdown('</div>', unsafe_allow_html=True)
+        
+        st.markdown('</div>', unsafe_allow_html=True)
+        
 def main_app():
     st.markdown("""
         <style>
