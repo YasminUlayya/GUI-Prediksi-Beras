@@ -773,7 +773,6 @@ def show_welcome_page():
             st.rerun()
 
 def main_app():
-    st.sidebar.image(load_image("logo.png"), use_column_width=True)
     # Mapping halaman dan fungsi
     pages = {
         "Upload Data": show_upload_page,
