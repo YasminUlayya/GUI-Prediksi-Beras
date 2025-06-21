@@ -752,7 +752,7 @@ def show_welcome_page():
             st.markdown(
                 """
                 <div style="text-align: center;">
-                    <!-- Logo (ganti dengan path logo Anda) -->
+                    <!-- Logo -->
                     <img src="logo.png" width="150" style="margin-bottom: 30px;">
                     
                     <!-- Judul -->
