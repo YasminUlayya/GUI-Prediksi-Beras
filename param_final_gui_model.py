@@ -775,6 +775,10 @@ def show_welcome_page():
 def main_app():
     st.markdown("""
         <style>
+            /* Main background color */
+            .stApp {
+                background-color: #ffffe0 !important;
+            }
             /* Warna background sidebar */
             [data-testid="stSidebar"] {
                 background-color: #800000 !important;
