@@ -773,9 +773,8 @@ def show_welcome_page():
             st.rerun()
 
 def main_app():
-    # CSS untuk mengubah seluruh sidebar menjadi maroon
 st.markdown("""
-        <style>
+    <style>
         /* Warna background utama sidebar */
         [data-testid="stSidebar"] {
             background-color: #800000 !important;
@@ -798,60 +797,68 @@ st.markdown("""
             border-top: 1px solid #a00000 !important;
         }
         
-        /* Remove icon next to Main Menu */
-        .st-emotion-cache-1v7f65g {
+        /* Hilangkan ikon menu dan atur warna teks Main Menu */
+        div[data-testid="stSidebarNav"] > ul > li > div > div > div > div:nth-child(1) > svg {
             display: none !important;
         }
         
-        /* Make Main Menu text white */
+        div[data-testid="stSidebarNav"] > ul > li > div > div > div > div:nth-child(2) {
+            color: white !important;
+            font-weight: bold;
+        }
+        
+        /* Style untuk option menu */
         .st-emotion-cache-1aehpvj {
             color: white !important;
         }
-        </style>
-    """, unsafe_allow_html=True)
+    </style>
+""", unsafe_allow_html=True)
 
-    # Mapping halaman dan fungsi
-    pages = {
-        "Upload Data": show_upload_page,
-        "Eksekusi Model": show_model_page,
-        "Visualisasi": show_visualization_page,
-        "Evaluasi": show_evaluation_page,
-        "Prediksi ke Depan": show_prediction_page,
-    }
+# Mapping halaman dan fungsi
+pages = {
+    "Upload Data": show_upload_page,
+    "Eksekusi Model": show_model_page,
+    "Visualisasi": show_visualization_page,
+    "Evaluasi": show_evaluation_page,
+    "Prediksi ke Depan": show_prediction_page,
+}
+
+# Menu navigasi di sidebar dengan option_menu
+with st.sidebar:
+    selected = option_menu(
+        menu_title=None,  # Menghilangkan title default
+        options=list(pages.keys()),
+        icons=["cloud-upload", "cpu", "bar-chart", "clipboard-data", "graph-up"],
+        menu_icon="cast",
+        default_index=0,
+        styles={
+            "container": {
+                "padding": "5px", 
+                "background-color": "#800000"
+            },
+            "icon": {
+                "color": "#ffffff",
+                "font-size": "14px"
+            }, 
+            "nav-link": {
+                "font-size": "14px", 
+                "text-align": "left", 
+                "margin": "0px", 
+                "--hover-color": "#a00000",
+                "color": "#ffffff"
+            },
+            "nav-link-selected": {
+                "background-color": "#600000",
+                "color": "white"
+            },
+        }
+    )
     
-    # Menu navigasi di sidebar dengan option_menu
-    with st.sidebar:
-        selected = option_menu(
-            menu_title="Main Menu",
-            options=list(pages.keys()),
-            icons=["cloud-upload", "cpu", "bar-chart", "clipboard-data", "graph-up"],
-            menu_icon="cast",
-            default_index=0,
-            styles={
-                "container": {
-                    "padding": "5px", 
-                    "background-color": "#800000"  # Warna maroon
-                },
-                "icon": {
-                    "color": "#ffffff",  # Warna ikon putih
-                    "font-size": "14px"
-                }, 
-                "nav-link": {
-                    "font-size": "14px", 
-                    "text-align": "left", 
-                    "margin": "0px", 
-                    "--hover-color": "#a00000",  # Warna hover lebih terang
-                    "color": "#ffffff"  # Warna teks putih
-                },
-                "nav-link-selected": {
-                    "background-color": "#600000",  # Warna item terpilih lebih gelap
-                    "color": "white"
-                },
-            }
-        )
-    
-    # Jalankan fungsi halaman yang dipilih
-    pages[selected]()
+    # Menambahkan judul "Main Menu" secara manual dengan style yang diinginkan
+    st.markdown("<h2 style='color: white;'>Main Menu</h2>", unsafe_allow_html=True)
+
+# Jalankan fungsi halaman yang dipilih
+pages[selected]()
     
 def main():
     initialize_session_state()  # Panggil inisialisasi di awal
