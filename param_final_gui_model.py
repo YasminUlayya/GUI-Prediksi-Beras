@@ -784,11 +784,6 @@ def main_app():
                 background-color: #600000 !important;
             }
             
-            /* Hilangkan ikon di sebelah Main Menu */
-            .st-emotion-cache-1v7f65g {
-                display: none !important;
-            }
-            
             /* Warna teks Main Menu menjadi putih */
             .st-emotion-cache-1aehpvj {
                 color: white !important;
@@ -807,25 +802,40 @@ def main_app():
                 color: white !important;
             }
             
-            /* Alternatif jika class name berubah */
-            div[data-testid="stSidebarNav"] ul li div div div div:nth-child(1) svg {
-                display: none !important;
-            }
-            
-            div[data-testid="stSidebarNav"] ul li div div div div:nth-child(2) {
-                color: white !important;
-                font-weight: bold;
-            }
-
             /* Style untuk logo */
             .sidebar-logo {
                 padding: 1rem;
                 text-align: center;
             }
+            
+            /* Style untuk footer */
+            .sidebar-footer {
+                color: white !important;
+                padding: 1rem;
+                margin-top: 2rem;
+                font-size: 0.9rem;
+                text-align: center;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            
+            .sidebar-footer strong {
+                color: white !important;
+            }
+            
+            .sidebar-footer em {
+                color: rgba(255, 255, 255, 0.7) !important;
+                font-size: 0.8rem;
+            }
+            
+            /* Menampilkan ikon menu */
+            div[data-testid="stSidebarNav"] ul li div div div div:nth-child(1) svg {
+                display: inline-block !important;
+                color: white !important;
+                margin-right: 8px;
+            }
         </style>
     """, unsafe_allow_html=True)
 
-    
     # Mapping halaman dan fungsi
     pages = {
         "Upload Data": show_upload_page,
@@ -839,14 +849,14 @@ def main_app():
     with st.sidebar:
         # Tambahkan logo di atas navigasi
         st.markdown('<div class="sidebar-logo">', unsafe_allow_html=True)
-        st.image("logo.png", use_container_width=True)  # Perubahan di sini
+        st.image("logo.png", use_container_width=True)
         st.markdown('</div>', unsafe_allow_html=True)
         
         selected = option_menu(
             menu_title="Main Menu",
             options=list(pages.keys()),
             icons=["cloud-upload", "cpu", "bar-chart", "clipboard-data", "graph-up"],
-            menu_icon=None,  # Pastikan tidak ada ikon menu
+            menu_icon="cast",
             default_index=0,
             styles={
                 "container": {
@@ -854,27 +864,31 @@ def main_app():
                     "background-color": "#800000"
                 },
                 "icon": {
-                    "color": "#ffffff",
-                    "font-size": "14px",
-                    "display": "none"  # Tambahkan ini untuk memastikan ikon tidak muncul
+                    "color": "white",
+                    "font-size": "16px",
+                    "display": "inline-block"  # Pastikan ikon ditampilkan
                 }, 
                 "nav-link": {
                     "font-size": "14px", 
                     "text-align": "left", 
                     "margin": "0px", 
                     "--hover-color": "#a00000",
-                    "color": "#ffffff"
+                    "color": "white",
+                    "display": "flex",
+                    "align-items": "center"
                 },
                 "nav-link-selected": {
                     "background-color": "#600000",
                     "color": "white"
                 },
                 "menu-title": {
-                    "color": "white !important",  # Tambahkan style khusus untuk menu title
-                    "font-weight": "bold"
+                    "color": "white",
+                    "font-weight": "bold",
+                    "margin-bottom": "10px"
                 }
             }
         )
+        
         # Footer di bagian bawah sidebar
         st.markdown("""
             <div class="sidebar-footer">
@@ -1264,6 +1278,41 @@ def show_evaluation_page():
     st.pyplot(fig)
 
 def show_prediction_page():
+        # Tambahkan CSS untuk styling tombol
+    st.markdown("""
+    <style>
+        /* Warna dasar tombol prediksi ke depan */
+        div.stButton > button:first-child {
+            background-color: #737373 !important;
+            color: white !important;
+            border: none !important;
+            font-weight: bold !important;
+            transition: all 0.3s !important;
+        }
+        
+        /* Efek hover */
+        div.stButton > button:first-child:hover {
+            background-color: #4c4c4c !important;
+            transform: scale(1.02) !important;
+        }
+        
+        /* Efek aktif */
+        div.stButton > button:first-child:active {
+            background-color: #282828 !important;
+            transform: scale(0.98) !important;
+        }
+        
+        /* Tombol primary khusus */
+        div.stButton > button.primary {
+            background-color: #737373 !important;
+        }
+        
+        div.stButton > button.primary:hover {
+            background-color: #4c4c4c !important;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+    
     st.header("🔮 Hasil Prediksi")
     st.markdown("---")
     # Validasi session state
@@ -1290,7 +1339,7 @@ def show_prediction_page():
                              value=default_start_date,
                              min_value=min_start_date)
 
-    if st.button("🔄 Prediksi Harga yang Akan Datang"):
+    if st.button("Prediksi Harga yang Akan Datang"):
         with st.spinner('Menghasilkan prediksi...'):
             try:
                 pred = predict_next_30_days(st.session_state.results, start_date=str(start_date))
