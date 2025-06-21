@@ -731,22 +731,22 @@ def initialize_session_state():
 def show_welcome_page():
     st.markdown("""
     <style>
-        .centered {
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
         .title {
+            text-align: center;
             color: #333333;
             font-size: 2.2rem;
             margin: 1rem 0;
         }
         .description {
+            text-align: center;
             color: #555555;
             font-size: 1.1rem;
-            margin-bottom: 2rem;
+            margin: 0 auto 2rem auto;
             max-width: 600px;
+        }
+        .stButton {
+            display: flex;
+            justify-content: center;
         }
         div.stButton > button {
             background-color: #800000 !important;
@@ -772,24 +772,24 @@ def show_welcome_page():
     </style>
     """, unsafe_allow_html=True)
 
-    # Logo di tengah
-    st.image("logo.png", width=200) 
+    # Logo di tengah (otomatis center di Streamlit)
+    st.image("logo.png", width=200)
     
-    # Judul dan deskripsi
-    st.markdown('<h1 class="centered title">Sistem Prediksi Harga Beras</h1>', unsafe_allow_html=True)
+    # Judul
+    st.markdown('<h1 class="title">Sistem Prediksi Harga Beras</h1>', unsafe_allow_html=True)
+    
+    # Deskripsi
     st.markdown("""
-    <p class="centered description">
+    <p class="description">
         Aplikasi ini menggunakan model Fuzzy Time Series Cheng-Adaptive Particle Swarm Optimization 
         untuk memprediksi harga beras di Surabaya
     </p>
     """, unsafe_allow_html=True)
 
-    # Tombol di tengah
-    col1= st.columns(1)
-    with col1:
-        if st.button("Mulai Aplikasi", key="welcome_button"):
-            st.session_state.current_page = "show_upload_page"
-            st.rerun()
+    # Tombol di tengah (cara paling sederhana)
+    if st.button("Mulai Aplikasi", key="welcome_button"):
+        st.session_state.current_page = "show_upload_page"
+        st.rerun()
         
 def main_app():
     st.markdown("""
