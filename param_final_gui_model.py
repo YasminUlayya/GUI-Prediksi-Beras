@@ -773,7 +773,7 @@ def show_welcome_page():
             st.rerun()
 
 def main_app():
-    # Menu navigasi
+    # Mapping halaman dan fungsi
     pages = {
         "Upload Data": show_upload_page,
         "Eksekusi Model": show_model_page,
@@ -781,10 +781,8 @@ def main_app():
         "Evaluasi": show_evaluation_page,
         "Prediksi ke Depan": show_prediction_page,
     }
-
-    selected_page = st.sidebar.radio("Menu", list(pages.keys()))
-    pages[selected_page]()
-
+    
+    # Menu navigasi di sidebar dengan option_menu
     with st.sidebar:
         selected = option_menu(
             menu_title="Main Menu",
@@ -795,10 +793,19 @@ def main_app():
             styles={
                 "container": {"padding": "5px", "background-color": "#f8f9fa"},
                 "icon": {"color": "orange", "font-size": "14px"}, 
-                "nav-link": {"font-size": "14px", "text-align": "left", "margin": "0px", "--hover-color": "#eee"},
+                "nav-link": {
+                    "font-size": "14px", 
+                    "text-align": "left", 
+                    "margin": "0px", 
+                    "--hover-color": "#eee"
+                },
                 "nav-link-selected": {"background-color": "#0d6efd"},
             }
         )
+    
+    # Jalankan fungsi halaman yang dipilih
+    pages[selected]()
+    
 def main():
     initialize_session_state()  # Panggil inisialisasi di awal
 
