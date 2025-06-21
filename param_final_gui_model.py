@@ -731,7 +731,7 @@ def initialize_session_state():
 import streamlit as st
 
 def show_welcome_page():
-    # Set background color for the page
+    # Set background color halaman
     st.markdown(
         """
         <style>
@@ -743,53 +743,56 @@ def show_welcome_page():
         unsafe_allow_html=True
     )
 
-    # Container untuk konten tengah
-    with st.container():
-        # Kolom untuk logo, judul, deskripsi, dan tombol (agar rata tengah)
-        col1, col2, col3 = st.columns([1, 6, 1])
+    # Gunakan kolom kosong untuk membuat konten rata tengah
+    col1, col2, col3 = st.columns([1, 6, 1])
 
-        with col2:
-            st.markdown(
-                """
-                <div style="text-align: center;">
-                    <!-- Logo -->
-                    <img src="logo.png" width="150" style="margin-bottom: 30px;">
-                    
-                    <!-- Judul -->
-                    <h1 style="color: #333333; margin-bottom: 20px;">Sistem Prediksi Harga Beras Kota Surabaya</h1>
-                    
-                    <!-- Deskripsi -->
-                    <p style="color: #555555; margin-bottom: 30px;">
-                        Aplikasi ini menggunakan model Fuzzy Time Series Cheng-Adaptive Particle Swarm Optimization 
-                        untuk memprediksi harga beras di Surabaya
-                    </p>
-                    
-                    <!-- Tombol -->
-                    <style>
-                    .custom-button {
-                        background-color: #600000 !important;
-                        color: white !important;
-                        border: none;
-                        padding: 10px 20px;
-                        text-align: center;
-                        text-decoration: none;
-                        display: inline-block;
-                        font-size: 16px;
-                        margin: 4px 2px;
-                        cursor: pointer;
-                        border-radius: 8px;
-                    }
-                    .custom-button:hover {
-                        background-color: #800000 !important;
-                    }
-                    </style>
-                    <button class="custom-button">Mulai Aplikasi</button>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
+    with col2:
+        # Logo (ganti dengan path logo Anda)
+        st.image("logo.png", width=150, use_column_width=False)  # Pastikan file logo.png ada di direktori yang sama
 
-# Panggil fungsi untuk menampilkan halaman
+        # Judul (rata tengah dengan markdown)
+        st.markdown(
+            "<h1 style='text-align: center; color: #333333; margin-bottom: 20px;'>Sistem Prediksi Harga Beras Kota Surabaya</h1>", 
+            unsafe_allow_html=True
+        )
+
+        # Deskripsi (rata tengah)
+        st.markdown(
+            """
+            <p style='text-align: center; color: #555555; margin-bottom: 30px;'>
+                Aplikasi ini menggunakan model Fuzzy Time Series Cheng-Adaptive Particle Swarm Optimization<br>
+                untuk memprediksi harga beras di Surabaya
+            </p>
+            """,
+            unsafe_allow_html=True
+        )
+
+        # Tombol dengan CSS kustom
+        st.markdown(
+            """
+            <style>
+            .stButton>button {
+                background-color: #600000 !important;
+                color: white !important;
+                border: none;
+                border-radius: 8px;
+                padding: 10px 20px;
+                display: block;
+                margin: 0 auto;
+            }
+            .stButton>button:hover {
+                background-color: #800000 !important;
+            }
+            </style>
+            """,
+            unsafe_allow_html=True
+        )
+
+        # Tombol "Mulai Aplikasi" (rata tengah)
+        if st.button("Mulai Aplikasi"):
+            st.session_state.page = "main"  # Navigasi ke halaman berikutnya
+
+# Panggil fungsi
 show_welcome_page()
         
 def main_app():
