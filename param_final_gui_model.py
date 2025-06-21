@@ -730,8 +730,10 @@ def initialize_session_state():
 
 import streamlit as st
 
+import streamlit as st
+
 def show_welcome_page():
-    # Set background color halaman
+    # Set background color
     st.markdown(
         """
         <style>
@@ -743,22 +745,21 @@ def show_welcome_page():
         unsafe_allow_html=True
     )
 
-    # Gunakan kolom kosong untuk membuat konten rata tengah
+    # Center content using columns
     col1, col2, col3 = st.columns([1, 6, 1])
 
     with col2:
         # Logo
-        st.markdown('<div class="sidebar-logo">', unsafe_allow_html=True)
-        st.image("logo.png", use_container_width=True)
-        st.markdown('</div>', unsafe_allow_html=True)
+        st.image("logo.png", width=150, use_column_width=False)
 
-        # Judul (rata tengah dengan markdown)
+        # Title
         st.markdown(
-            "<h1 style='text-align: center; color: #333333; margin-bottom: 20px;'>Sistem Prediksi Harga Beras Kota Surabaya</h1>", 
+            "<h1 style='text-align: center; color: #333333; margin-bottom: 20px;'>"
+            "Sistem Prediksi Harga Beras Kota Surabaya</h1>", 
             unsafe_allow_html=True
         )
 
-        # Deskripsi (rata tengah)
+        # Description
         st.markdown(
             """
             <p style='text-align: center; color: #555555; margin-bottom: 30px;'>
@@ -769,11 +770,11 @@ def show_welcome_page():
             unsafe_allow_html=True
         )
 
-        # Tombol dengan CSS kustom
+        # Button CSS
         st.markdown(
             """
             <style>
-            .stButton>button {
+            div.stButton > button:first-child {
                 background-color: #600000 !important;
                 color: white !important;
                 border: none;
@@ -782,7 +783,7 @@ def show_welcome_page():
                 display: block;
                 margin: 0 auto;
             }
-            .stButton>button:hover {
+            div.stButton > button:first-child:hover {
                 background-color: #800000 !important;
             }
             </style>
@@ -790,11 +791,10 @@ def show_welcome_page():
             unsafe_allow_html=True
         )
 
-        # Tombol "Mulai Aplikasi" (rata tengah)
-        if st.button("Mulai Aplikasi"):
-            st.session_state.page = "main"  # Navigasi ke halaman berikutnya
+        # Button with unique key
+        if st.button("Mulai Aplikasi", key="unique_start_button"):
+            st.session_state.page = "main"
 
-# Panggil fungsi
 show_welcome_page()
         
 def main_app():
