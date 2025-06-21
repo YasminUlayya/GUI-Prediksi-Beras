@@ -869,6 +869,7 @@ def main_app():
                 <strong>Prediksi Harga Beras Kota Surabaya</strong><br>
                 <em>© 2025 - Mahasiswa Sains Data</em>
             </div>
+        """, unsafe_allow_html=True)
         
     # Jalankan fungsi halaman yang dipilih
     pages[selected]()
