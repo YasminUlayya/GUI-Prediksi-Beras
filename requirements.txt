@@ -5,3 +5,4 @@ scikit-learn
 streamlit
 ipython
 openpyxl
+streamlit-option-menu
