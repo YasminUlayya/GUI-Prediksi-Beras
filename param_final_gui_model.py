@@ -1071,6 +1071,17 @@ def show_model_page():
             except Exception as e:
                 st.error(f"Gagal menjalankan model: {str(e)}")
 
+    .stButton>button {
+        background-color: #737373 !important;  # Contoh: hijau
+        color: white !important;
+        border: none;
+        padding: 10px 24px;
+        border-radius: 4px;
+    }
+    .stButton>button:hover {
+        background-color: #4c4c4c !important;  # Hijau lebih gelap saat hover
+    }
+
 def plot_result(results):
     """Fungsi untuk membuat plot"""
     try:
