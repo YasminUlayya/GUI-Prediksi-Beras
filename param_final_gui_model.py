@@ -781,7 +781,7 @@ def main_app():
             }
             /* Warna background sidebar */
             [data-testid="stSidebar"] {
-                background-color: #800000 !important;
+                background-color: #fff5d4 !important;
             }
             
             /* Hilangkan ikon di sebelah Main Menu */
