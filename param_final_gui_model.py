@@ -839,7 +839,7 @@ def main_app():
     with st.sidebar:
         # Tambahkan logo di atas navigasi
         st.markdown('<div class="sidebar-logo">', unsafe_allow_html=True)
-        st.image("logo.png", use_column_width=True)  # Pastikan file logo.png ada di direktori yang benar
+        st.image("logo.png", use_container_width=True)  # Perubahan di sini
         st.markdown('</div>', unsafe_allow_html=True)
         
         selected = option_menu(
