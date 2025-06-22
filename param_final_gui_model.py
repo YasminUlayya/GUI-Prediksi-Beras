@@ -754,11 +754,13 @@ def show_welcome_page():
             align-items: center !important;
         }
         
-        /* Logo styling - forced center */
-        .logo-container {
-            margin: 0 auto 2rem auto !important;
-            text-align: center !important;
+        /* Foolproof logo centering */
+        .logo-center {
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
             width: 100% !important;
+            margin-bottom: 2rem !important;
         }
         
         /* Title styling - forced center */
