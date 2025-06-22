@@ -765,11 +765,23 @@ def show_welcome_page():
             align-items: center !important;
         }
         
-        /* Logo styling */
+        /* Logo container with border */
         .logo-container {
             margin-bottom: 2rem !important;
             text-align: left !important;
-            width: 100% !important;
+            width: fit-content !important;
+            padding: 15px !important;
+            border: 3px solid white !important;
+            border-radius: 12px !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+            background-color: rgba(255,255,255,0.1) !important;
+        }
+        
+        /* Logo image styling */
+        .logo-container img {
+            display: block !important;
+            max-width: 100% !important;
+            height: auto !important;
         }
         
         /* Title styling for left side */
@@ -780,6 +792,7 @@ def show_welcome_page():
             text-align: left !important;
             width: 100% !important;
             font-weight: 700 !important;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3) !important;
         }
         
         /* Description styling for left side */
@@ -792,18 +805,27 @@ def show_welcome_page():
             width: 100% !important;
         }
         
-        /* Button styling for right side */
+        /* Button container with border */
+        .button-container {
+            padding: 20px !important;
+            border: 3px solid #600000 !important;
+            border-radius: 12px !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+            background-color: rgba(255,255,255,0.9) !important;
+        }
+        
+        /* Button styling */
         .stButton > button {
             background-color: #600000 !important;
             color: white !important;
-            border: none !important;
+            border: 2px solid white !important;
             font-weight: bold !important;
             font-size: 1.1rem !important;
             width: 220px !important;
             height: 55px !important;
             border-radius: 8px !important;
             transition: all 0.3s ease !important;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
             margin: 0 auto !important;
             display: block !important;
         }
@@ -812,6 +834,7 @@ def show_welcome_page():
             background-color: #450000 !important;
             transform: translateY(-2px) !important;
             box-shadow: 0 6px 16px rgba(0,0,0,0.2) !important;
+            border-color: #f0f0f0 !important;
         }
     </style>
     """, unsafe_allow_html=True)
@@ -837,10 +860,12 @@ def show_welcome_page():
     
     # Right side content
     st.markdown('<div class="right-side">', unsafe_allow_html=True)
+    st.markdown('<div class="button-container">', unsafe_allow_html=True)
     if st.button("Mulai Aplikasi", key="welcome_button"):
         st.session_state.show_main_app = True
         st.session_state.current_page = "show_upload_page"
         st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)  # Close button-container
     st.markdown('</div>', unsafe_allow_html=True)  # Close right-side
     
     st.markdown('</div>', unsafe_allow_html=True)  # Close split-container
