@@ -738,41 +738,43 @@ def show_welcome_page():
             justify-content: center !important;
             align-items: center !important;
             min-height: 100vh !important;
+            padding: 20px !important;
         }
         
         /* Main content wrapper */
         .centered-wrapper {
             width: 100% !important;
             max-width: 600px !important;
-            margin: auto !important;
+            margin: 0 auto !important;
             text-align: center !important;
-            padding: 2rem !important;
+            padding: 40px 20px !important;
         }
         
         /* Logo styling */
         .logo-container {
-            margin-bottom: 2rem !important;
-            display: flex !important;
-            justify-content: center !important;
+            margin: 0 auto 30px auto !important;
+            width: fit-content !important;
         }
         
         /* Title styling */
         .title {
             color: #333333 !important;
             font-size: 2.2rem !important;
-            margin-bottom: 1rem !important;
+            margin: 0 auto 20px auto !important;
             text-align: center !important;
             width: 100% !important;
+            padding: 0 20px !important;
         }
         
         /* Description styling */
         .description {
             color: #555555 !important;
             font-size: 1.1rem !important;
-            margin: 0 auto 2rem auto !important;
+            margin: 0 auto 30px auto !important;
             text-align: center !important;
-            max-width: 100% !important;
+            max-width: 90% !important;
             line-height: 1.6 !important;
+            padding: 0 20px !important;
         }
         
         /* Button container */
@@ -780,6 +782,7 @@ def show_welcome_page():
             display: flex !important;
             justify-content: center !important;
             width: 100% !important;
+            padding: 0 20px !important;
         }
         
         /* Button styling */
@@ -808,7 +811,6 @@ def show_welcome_page():
     st.markdown('</div>', unsafe_allow_html=True)
     
     # Title - perfectly centered
-    st.markdown('<h1 class="title">Ricecracle</h1>', unsafe_allow_html=True)
     st.markdown('<h2 class="title">Sistem Prediksi Harga Beras</h2>', unsafe_allow_html=True)
     
     # Description - perfectly centered
