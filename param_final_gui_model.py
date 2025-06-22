@@ -766,7 +766,7 @@ def show_welcome_page():
         
         /* Title styling - left aligned */
         .title {
-            color: #333333 !important;
+            color: #f0f0f0 !important;
             font-size: 2.2rem !important;
             margin: 0 0 1rem 0 !important;
             text-align: left !important;
@@ -775,7 +775,7 @@ def show_welcome_page():
         
         /* Description styling - left aligned */
         .description {
-            color: #555555 !important;
+            color: #f0f0f0 !important;
             font-size: 1.1rem !important;
             margin: 0 0 2rem 0 !important;
             text-align: left !important;
@@ -794,9 +794,9 @@ def show_welcome_page():
         
         /* Button styling */
         .stButton > button {
-            background-color: #800000 !important;
-            color: white !important;
-            border: none !important;
+            background-color: #f0f0f0 !important;
+            color: black !important;
+            border: black !important;
             font-weight: bold !important;
             font-size: 18px !important;
             width: 220px !important;
@@ -828,7 +828,7 @@ def show_welcome_page():
     st.markdown("""
     <p class="description">
         Aplikasi ini menggunakan model Fuzzy Time Series Cheng-Adaptive Particle Swarm Optimization 
-        untuk memprediksi harga beras di Kota Surabaya
+        untuk<br>memprediksi harga beras di Kota Surabaya<br>
     </p>
     """, unsafe_allow_html=True)
     
