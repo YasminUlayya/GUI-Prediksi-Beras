@@ -738,7 +738,7 @@ def show_welcome_page():
             justify-content: center !important;
             align-items: center !important;
             min-height: 100vh !important;
-            padding: 2rem !important;  /* Tambahkan padding untuk seluruh halaman */
+            padding: 0 !important;
             margin: 0 !important;
         }
         
@@ -748,63 +748,42 @@ def show_welcome_page():
             max-width: 600px !important;
             margin: 0 auto !important;
             text-align: center !important;
-            padding: 2.5rem !important;  /* Padding yang lebih besar */
+            padding: 2rem !important;
             display: flex !important;
             flex-direction: column !important;
             align-items: center !important;
-            background-color: white !important;  /* Background putih untuk konten */
-            border-radius: 12px !important;  /* Sudut melengkung */
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1) !important;  /* Bayangan halus */
         }
         
-        /* Logo styling - improved centering */
-        .logo-container {
-            margin: 0 auto 2rem auto !important;
-            text-align: center !important;
-            width: 100% !important;
-            padding: 0 20px !important;  /* Padding kiri-kanan untuk logo */
-        }
         
-        /* Logo image styling */
-        .logo-container img {
-            display: block !important;
-            margin-left: auto !important;
-            margin-right: auto !important;
-            max-width: 100% !important;
-        }
-        
-        /* Title styling */
+        /* Title styling - forced center */
         .title {
             color: #333333 !important;
             font-size: 2.2rem !important;
-            margin: 0 auto 1.5rem auto !important;  /* Margin bawah lebih besar */
+            margin: 0 auto 1rem auto !important;
             text-align: center !important;
             width: 100% !important;
-            font-weight: 600 !important;
         }
         
-        /* Description styling */
+        /* Description styling - forced center */
         .description {
             color: #555555 !important;
             font-size: 1.1rem !important;
-            margin: 0 auto 2.5rem auto !important;  /* Margin bawah lebih besar */
+            margin: 0 auto 2rem auto !important;
             text-align: center !important;
             max-width: 100% !important;
-            line-height: 1.7 !important;  /* Line height lebih longgar */
+            line-height: 1.6 !important;
             width: 100% !important;
-            padding: 0 10px !important;  /* Padding kiri-kanan */
         }
         
-        /* Button container */
+        /* Button container - forced center */
         .button-container {
             display: flex !important;
             justify-content: center !important;
             width: 100% !important;
             margin: 0 auto !important;
-            padding: 0 20px !important;  /* Padding kiri-kanan */
         }
         
-        /* Button styling */
+        /* Button styling - forced center */
         .stButton > button {
             background-color: #800000 !important;
             color: white !important;
@@ -819,43 +798,35 @@ def show_welcome_page():
             margin: 0 auto !important;
             display: block !important;
         }
-        
-        /* Button hover effect */
-        .stButton > button:hover {
-            transform: translateY(-2px) !important;
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15) !important;
-        }
     </style>
     """, unsafe_allow_html=True)
 
-    # Main centered container
-    st.markdown('<div class="centered-wrapper">', unsafe_allow_html=True)
+    # Main centered container - now using columns for perfect centering
+    col1, col2, col3 = st.columns([1, 6, 1])
     
-    # Logo container with proper margins
-    st.markdown('<div class="logo-container">', unsafe_allow_html=True)
-    st.image("logo.png", width=200)  # Atur width sesuai kebutuhan
-    st.markdown('</div>', unsafe_allow_html=True)
-    
-    # Title
-    st.markdown('<h2 class="title">Sistem Prediksi Harga Beras</h2>', unsafe_allow_html=True)
-    
-    # Description
-    st.markdown("""
-    <p class="description">
-        Aplikasi ini menggunakan model Fuzzy Time Series Cheng-Adaptive Particle Swarm Optimization 
-        untuk memprediksi harga beras di Kota Surabaya
-    </p>
-    """, unsafe_allow_html=True)
-    
-    # Button
-    st.markdown('<div class="button-container">', unsafe_allow_html=True)
-    if st.button("Mulai Aplikasi", key="welcome_button"):
-        st.session_state.show_main_app = True
-        st.session_state.current_page = "show_upload_page"
-        st.rerun()
-    st.markdown('</div>', unsafe_allow_html=True)
-    
-    st.markdown('</div>', unsafe_allow_html=True)
+    with col2:
+        st.markdown('<div class="centered-wrapper">', unsafe_allow_html=True)
+        
+        # Title - now truly centered
+        st.markdown('<h2 class="title">Sistem Prediksi Harga Beras</h2>', unsafe_allow_html=True)
+        
+        # Description - now truly centered
+        st.markdown("""
+        <p class="description">
+            Aplikasi ini menggunakan model Fuzzy Time Series Cheng-Adaptive Particle Swarm Optimization 
+            untuk memprediksi harga beras di Kota Surabaya
+        </p>
+        """, unsafe_allow_html=True)
+        
+        # Button - now truly centered
+        st.markdown('<div class="button-container">', unsafe_allow_html=True)
+        if st.button("Mulai Aplikasi", key="welcome_button"):
+            st.session_state.show_main_app = True
+            st.session_state.current_page = "show_upload_page"
+            st.rerun()
+        st.markdown('</div>', unsafe_allow_html=True)
+        
+        st.markdown('</div>', unsafe_allow_html=True)
         
 def main_app():
     st.markdown("""
