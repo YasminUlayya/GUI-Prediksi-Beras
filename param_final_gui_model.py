@@ -729,107 +729,99 @@ def initialize_session_state():
         st.session_state.column_info = None
 
 def show_welcome_page():
-    st.markdown(
-        """
-        <style>
-            /* Container utama dengan padding */
-            .main-container {
-                position: relative;
-                min-height: 100vh;
-            }
-            
-            /* Background image dengan HTML/CSS */
-            .bg-image {
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background-image: url('bg-rice.jpg');
-                background-size: cover;
-                background-position: center;
-                z-index: -1;
-                opacity: 0.8;
-            }
-            
-            /* Overlay semi-transparan */
-            .overlay {
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background-color: rgba(0, 0, 0, 0.4);
-                z-index: -1;
-            }
-            
-            /* Konten utama */
-            .centered-wrapper {
-                background-color: rgba(255, 255, 255, 0.95);
-                width: 100%;
-                max-width: 600px;
-                margin: 2rem auto;
-                text-align: center;
-                padding: 2.5rem;
-                border-radius: 15px;
-                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-                position: relative;
-            }
-            
-            .title {
-                color: #2e7d32;
-                font-size: 2.4rem;
-                margin: 0 auto 1.2rem auto;
-                font-weight: 700;
-            }
-            
-            .description {
-                color: #333333;
-                font-size: 1.15rem;
-                margin: 0 auto 2.5rem auto;
-                line-height: 1.7;
-            }
-            
-            .button-container {
-                display: flex;
-                justify-content: center;
-                width: 100%;
-            }
-            
-            .stButton > button {
-                background-color: #388e3c;
-                color: white;
-                border: none;
-                font-weight: bold;
-                font-size: 1.1rem;
-                width: 240px;
-                height: 55px;
-                border-radius: 10px;
-                transition: all 0.3s ease;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            }
-            
-            .stButton > button:hover {
-                background-color: #2e7d32;
-                transform: translateY(-2px);
-                box-shadow: 0 6px 16px rgba(0,0,0,0.2);
-            }
-        </style>
+    st.markdown("""
+    <style>
+        /* Full page centering */
+        .stApp {
+            background-color: #f0f0f0 !important;
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            min-height: 100vh !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
         
-        <div class="bg-image"></div>
-        <div class="overlay"></div>
-        """,
-        unsafe_allow_html=True
-    )
+        /* Main content wrapper - now truly centered */
+        .centered-wrapper {
+            width: 100% !important;
+            max-width: 600px !important;
+            margin: 0 auto !important;
+            text-align: center !important;
+            padding: 2rem !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+        }
+        
+        /* Logo styling - forced center */
+        .logo-container {
+            margin: 0 auto 2rem auto !important;
+            text-align: center !important;
+            width: 100% !important;
+        }
+        
+        /* Title styling - forced center */
+        .title {
+            color: #333333 !important;
+            font-size: 2.2rem !important;
+            margin: 0 auto 1rem auto !important;
+            text-align: center !important;
+            width: 100% !important;
+        }
+        
+        /* Description styling - forced center */
+        .description {
+            color: #555555 !important;
+            font-size: 1.1rem !important;
+            margin: 0 auto 2rem auto !important;
+            text-align: center !important;
+            max-width: 100% !important;
+            line-height: 1.6 !important;
+            width: 100% !important;
+        }
+        
+        /* Button container - forced center */
+        .button-container {
+            display: flex !important;
+            justify-content: center !important;
+            width: 100% !important;
+            margin: 0 auto !important;
+        }
+        
+        /* Button styling - forced center */
+        .stButton > button {
+            background-color: #800000 !important;
+            color: white !important;
+            border: none !important;
+            font-weight: bold !important;
+            font-size: 18px !important;
+            width: 220px !important;
+            height: 50px !important;
+            border-radius: 8px !important;
+            transition: all 0.3s ease !important;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
+            margin: 0 auto !important;
+            display: block !important;
+        }
+    </style>
+    """, unsafe_allow_html=True)
 
-    # Main content
+    # Main centered container - now using columns for perfect centering
     col1, col2, col3 = st.columns([1, 6, 1])
     
     with col2:
         st.markdown('<div class="centered-wrapper">', unsafe_allow_html=True)
         
+        # Logo - now truly centered
+        st.markdown('<div class="logo-container">', unsafe_allow_html=True)
+        st.image("logo.png", width=200)
+        st.markdown('</div>', unsafe_allow_html=True)
+        
+        # Title - now truly centered
         st.markdown('<h2 class="title">Sistem Prediksi Harga Beras</h2>', unsafe_allow_html=True)
         
+        # Description - now truly centered
         st.markdown("""
         <p class="description">
             Aplikasi ini menggunakan model Fuzzy Time Series Cheng-Adaptive Particle Swarm Optimization 
@@ -837,6 +829,7 @@ def show_welcome_page():
         </p>
         """, unsafe_allow_html=True)
         
+        # Button - now truly centered
         st.markdown('<div class="button-container">', unsafe_allow_html=True)
         if st.button("Mulai Aplikasi", key="welcome_button"):
             st.session_state.show_main_app = True
