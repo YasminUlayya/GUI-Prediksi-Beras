@@ -744,6 +744,7 @@ def show_welcome_page():
             display: flex !important;
             height: 100vh !important;
             width: 100% !important;
+            position: relative !important;
         }
         
         /* Left side styling */
@@ -756,13 +757,20 @@ def show_welcome_page():
             padding: 0 5rem !important;
         }
         
-        /* Right side styling */
+        /* Right side styling - modified for right-aligned button */
         .right-side {
             width: 50% !important;
-            display: flex !important;
-            flex-direction: column !important;
-            justify-content: center !important;
-            align-items: center !important;
+            position: relative !important;
+        }
+        
+        /* Button container - new styling */
+        .button-right-container {
+            position: absolute !important;
+            right: 50% !important;
+            transform: translateX(50%) !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            width: 220px !important;
         }
         
         /* Logo styling */
@@ -792,7 +800,7 @@ def show_welcome_page():
             width: 100% !important;
         }
         
-        /* Button styling for right side */
+        /* Button styling */
         .stButton > button {
             background-color: #600000 !important;
             color: white !important;
@@ -804,7 +812,6 @@ def show_welcome_page():
             border-radius: 8px !important;
             transition: all 0.3s ease !important;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
-            margin: 0 auto !important;
             display: block !important;
         }
         
@@ -835,12 +842,14 @@ def show_welcome_page():
     """, unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)  # Close left-side
     
-    # Right side content
+    # Right side content with properly centered button
     st.markdown('<div class="right-side">', unsafe_allow_html=True)
+    st.markdown('<div class="button-right-container">', unsafe_allow_html=True)
     if st.button("Mulai Aplikasi", key="welcome_button"):
         st.session_state.show_main_app = True
         st.session_state.current_page = "show_upload_page"
         st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)  # Close button container
     st.markdown('</div>', unsafe_allow_html=True)  # Close right-side
     
     st.markdown('</div>', unsafe_allow_html=True)  # Close split-container
