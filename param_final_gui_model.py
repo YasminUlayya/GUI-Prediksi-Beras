@@ -731,65 +731,68 @@ def initialize_session_state():
 def show_welcome_page():
     st.markdown("""
     <style>
-        /* Full page centering */
+        /* Full page split background */
         .stApp {
-            background-color: #f0f0f0 !important;
-            display: flex !important;
-            justify-content: center !important;
-            align-items: center !important;
+            background: linear-gradient(90deg, #600000 50%, #f0f0f0 50%) !important;
             min-height: 100vh !important;
             padding: 0 !important;
             margin: 0 !important;
         }
         
-        /* Main content wrapper - now truly centered */
-        .centered-wrapper {
+        /* Main content wrapper - aligned left */
+        .content-wrapper {
             width: 100% !important;
-            max-width: 600px !important;
-            margin: 0 auto !important;
-            text-align: center !important;
+            max-width: 1200px !important;
+            margin: 0 !important;
+            text-align: left !important;
             padding: 2rem !important;
             display: flex !important;
             flex-direction: column !important;
-            align-items: center !important;
+            align-items: flex-start !important;
         }
         
-        /* Logo styling - forced center */
+        /* Left-aligned container for content */
+        .left-content {
+            width: 50% !important;
+            padding-left: 2rem !important;
+        }
+        
+        /* Logo styling - left aligned */
         .logo-container {
-            margin: 0 auto 2rem auto !important;
-            text-align: center !important;
+            margin: 0 0 2rem 0 !important;
+            text-align: left !important;
             width: 100% !important;
         }
         
-        /* Title styling - forced center */
+        /* Title styling - left aligned */
         .title {
             color: #333333 !important;
             font-size: 2.2rem !important;
-            margin: 0 auto 1rem auto !important;
-            text-align: center !important;
+            margin: 0 0 1rem 0 !important;
+            text-align: left !important;
             width: 100% !important;
         }
         
-        /* Description styling - forced center */
+        /* Description styling - left aligned */
         .description {
             color: #555555 !important;
             font-size: 1.1rem !important;
-            margin: 0 auto 2rem auto !important;
-            text-align: center !important;
+            margin: 0 0 2rem 0 !important;
+            text-align: left !important;
             max-width: 100% !important;
             line-height: 1.6 !important;
             width: 100% !important;
         }
         
-        /* Button container - forced center */
+        /* Button container - left aligned */
         .button-container {
             display: flex !important;
-            justify-content: center !important;
+            justify-content: flex-start !important;
             width: 100% !important;
-            margin: 0 auto !important;
+            margin: 0 !important;
         }
         
-        /* Button styling - forced center */
+        /* Button styling */
         .stButton > button {
             background-color: #800000 !important;
             color: white !important;
@@ -801,43 +804,44 @@ def show_welcome_page():
             border-radius: 8px !important;
             transition: all 0.3s ease !important;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
-            margin: 0 auto !important;
+            margin: 0 !important;
             display: block !important;
         }
     </style>
     """, unsafe_allow_html=True)
 
-    # Main centered container - now using columns for perfect centering
-    col1, col2, col3 = st.columns([1, 6, 1])
+    # Main container
+    st.markdown('<div class="content-wrapper">', unsafe_allow_html=True)
     
-    with col2:
-        st.markdown('<div class="centered-wrapper">', unsafe_allow_html=True)
-        
-        # Logo - now truly centered
-        st.markdown('<div class="logo-container">', unsafe_allow_html=True)
-        st.image("logo.png", width=200)
-        st.markdown('</div>', unsafe_allow_html=True)
-        
-        # Title - now truly centered
-        st.markdown('<h2 class="title">Sistem Prediksi Harga Beras</h2>', unsafe_allow_html=True)
-        
-        # Description - now truly centered
-        st.markdown("""
-        <p class="description">
-            Aplikasi ini menggunakan model Fuzzy Time Series Cheng-Adaptive Particle Swarm Optimization 
-            untuk memprediksi harga beras di Kota Surabaya
-        </p>
-        """, unsafe_allow_html=True)
-        
-        # Button - now truly centered
-        st.markdown('<div class="button-container">', unsafe_allow_html=True)
-        if st.button("Mulai Aplikasi", key="welcome_button"):
-            st.session_state.show_main_app = True
-            st.session_state.current_page = "show_upload_page"
-            st.rerun()
-        st.markdown('</div>', unsafe_allow_html=True)
-        
-        st.markdown('</div>', unsafe_allow_html=True)
+    # Left-aligned content area
+    st.markdown('<div class="left-content">', unsafe_allow_html=True)
+    
+    # Logo - left aligned
+    st.markdown('<div class="logo-container">', unsafe_allow_html=True)
+    st.image("logo.png", width=200)
+    st.markdown('</div>', unsafe_allow_html=True)
+    
+    # Title - left aligned
+    st.markdown('<h2 class="title">Sistem Prediksi Harga Beras</h2>', unsafe_allow_html=True)
+    
+    # Description - left aligned
+    st.markdown("""
+    <p class="description">
+        Aplikasi ini menggunakan model Fuzzy Time Series Cheng-Adaptive Particle Swarm Optimization 
+        untuk memprediksi harga beras di Kota Surabaya
+    </p>
+    """, unsafe_allow_html=True)
+    
+    # Button - left aligned
+    st.markdown('<div class="button-container">', unsafe_allow_html=True)
+    if st.button("Mulai Aplikasi", key="welcome_button"):
+        st.session_state.show_main_app = True
+        st.session_state.current_page = "show_upload_page"
+        st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)
+    
+    st.markdown('</div>', unsafe_allow_html=True)  # Close left-content
+    st.markdown('</div>', unsafe_allow_html=True)  # Close content-wrapper
         
 def main_app():
     st.markdown("""
