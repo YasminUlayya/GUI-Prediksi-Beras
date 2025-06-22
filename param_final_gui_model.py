@@ -808,7 +808,7 @@ def show_welcome_page():
         st.markdown('<div class="centered-wrapper">', unsafe_allow_html=True)
         
         # Title - now truly centered
-        st.markdown('<h2 class="title">Sistem Prediksi Harga Beras</h2>', unsafe_allow_html=True)
+        st.markdown('<h2 class="title">Sistem Prediksi Harga Beras<br>Kota Surabaya<br></h2>', unsafe_allow_html=True)
         
         # Description - now truly centered
         st.markdown("""
