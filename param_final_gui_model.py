@@ -754,14 +754,6 @@ def show_welcome_page():
             align-items: center !important;
         }
         
-        /* Foolproof logo centering */
-        .logo-center {
-            display: flex !important;
-            justify-content: center !important;
-            align-items: center !important;
-            width: 100% !important;
-            margin-bottom: 2rem !important;
-        }
         
         /* Title styling - forced center */
         .title {
@@ -814,11 +806,6 @@ def show_welcome_page():
     
     with col2:
         st.markdown('<div class="centered-wrapper">', unsafe_allow_html=True)
-        
-        # Logo - now truly centered
-        st.markdown('<div class="logo-container">', unsafe_allow_html=True)
-        st.image("logo.png", width=200)
-        st.markdown('</div>', unsafe_allow_html=True)
         
         # Title - now truly centered
         st.markdown('<h2 class="title">Sistem Prediksi Harga Beras</h2>', unsafe_allow_html=True)
