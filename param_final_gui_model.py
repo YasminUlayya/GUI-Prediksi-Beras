@@ -738,58 +738,39 @@ def show_welcome_page():
             justify-content: center !important;
             align-items: center !important;
             min-height: 100vh !important;
-            padding: 0 !important;
-            margin: 0 !important;
         }
         
-        /* Main content wrapper - now truly centered */
-        .centered-wrapper {
-            width: 100% !important;
-            max-width: 600px !important;
-            margin: 0 auto !important;
-            text-align: center !important;
-            padding: 2rem !important;
-            display: flex !important;
-            flex-direction: column !important;
-            align-items: center !important;
+        /* Simple centered container */
+        .center-everything {
+            text-align: center;
+            width: 100%;
+            max-width: 600px;
+            padding: 2rem;
+            margin: 0 auto;
         }
         
-        /* Logo styling - forced center */
-        .logo-container {
-            margin: 0 auto 2rem auto !important;
-            text-align: center !important;
-            width: 100% !important;
+        /* Logo centering - foolproof method */
+        .center-logo {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 2rem;
         }
         
-        /* Title styling - forced center */
+        /* Other styles remain unchanged */
         .title {
-            color: #333333 !important;
-            font-size: 2.2rem !important;
-            margin: 0 auto 1rem auto !important;
-            text-align: center !important;
-            width: 100% !important;
+            color: #333333;
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
         }
         
-        /* Description styling - forced center */
         .description {
-            color: #555555 !important;
-            font-size: 1.1rem !important;
-            margin: 0 auto 2rem auto !important;
-            text-align: center !important;
-            max-width: 100% !important;
-            line-height: 1.6 !important;
-            width: 100% !important;
+            color: #555555;
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
         }
         
-        /* Button container - forced center */
-        .button-container {
-            display: flex !important;
-            justify-content: center !important;
-            width: 100% !important;
-            margin: 0 auto !important;
-        }
-        
-        /* Button styling - forced center */
         .stButton > button {
             background-color: #800000 !important;
             color: white !important;
@@ -807,37 +788,30 @@ def show_welcome_page():
     </style>
     """, unsafe_allow_html=True)
 
-    # Main centered container - now using columns for perfect centering
-    col1, col2, col3 = st.columns([1, 6, 1])
+    # Simple centered container
+    st.markdown('<div class="center-everything">', unsafe_allow_html=True)
     
-    with col2:
-        st.markdown('<div class="centered-wrapper">', unsafe_allow_html=True)
-        
-        # Logo - now truly centered
-        st.markdown('<div class="logo-container">', unsafe_allow_html=True)
-        st.image("logo.png", width=200)
-        st.markdown('</div>', unsafe_allow_html=True)
-        
-        # Title - now truly centered
-        st.markdown('<h2 class="title">Sistem Prediksi Harga Beras</h2>', unsafe_allow_html=True)
-        
-        # Description - now truly centered
-        st.markdown("""
-        <p class="description">
-            Aplikasi ini menggunakan model Fuzzy Time Series Cheng-Adaptive Particle Swarm Optimization 
-            untuk memprediksi harga beras di Surabaya
-        </p>
-        """, unsafe_allow_html=True)
-        
-        # Button - now truly centered
-        st.markdown('<div class="button-container">', unsafe_allow_html=True)
-        if st.button("Mulai Aplikasi", key="welcome_button"):
-            st.session_state.show_main_app = True
-            st.session_state.current_page = "show_upload_page"
-            st.rerun()
-        st.markdown('</div>', unsafe_allow_html=True)
-        
-        st.markdown('</div>', unsafe_allow_html=True)
+    # Logo - guaranteed centered
+    st.image("logo.png", width=200, output_format="PNG", use_column_width=False, clamp=False, channels="RGB", caption=None)
+    
+    # Title
+    st.markdown('<h2 class="title">Sistem Prediksi Harga Beras</h2>', unsafe_allow_html=True)
+    
+    # Description
+    st.markdown("""
+    <p class="description">
+        Aplikasi ini menggunakan model Fuzzy Time Series Cheng-Adaptive Particle Swarm Optimization 
+        untuk memprediksi harga beras di Kota Surabaya
+    </p>
+    """, unsafe_allow_html=True)
+    
+    # Button
+    if st.button("Mulai Aplikasi", key="welcome_button"):
+        st.session_state.show_main_app = True
+        st.session_state.current_page = "show_upload_page"
+        st.rerun()
+    
+    st.markdown('</div>', unsafe_allow_html=True)
         
 def main_app():
     st.markdown("""
