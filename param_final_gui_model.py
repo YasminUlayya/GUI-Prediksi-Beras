@@ -830,7 +830,7 @@ def show_welcome_page():
     st.markdown("""
     <p class="description">
         Aplikasi ini menggunakan model Fuzzy Time Series Cheng-Adaptive Particle Swarm Optimization 
-        untuk memprediksi harga beras di Kota Surabaya
+        untuk<br>memprediksi harga beras di Kota Surabaya<br>
     </p>
     """, unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)  # Close left-side
