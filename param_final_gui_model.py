@@ -803,8 +803,8 @@ def show_welcome_page():
         /* Button styling */
         .stButton > button {
             background-color: #f0f0f0 !important;
-            color: white !important;
-            border: none !important;
+            color: black !important;
+            border: black !important;
             font-weight: bold !important;
             font-size: 1.1rem !important;
             width: 220px !important;
