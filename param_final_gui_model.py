@@ -802,7 +802,7 @@ def show_welcome_page():
         
         /* Button styling */
         .stButton > button {
-            background-color: #600000 !important;
+            background-color: #f0f0f0 !important;
             color: white !important;
             border: none !important;
             font-weight: bold !important;
@@ -816,7 +816,7 @@ def show_welcome_page():
         }
         
         .stButton > button:hover {
-            background-color: #450000 !important;
+            background-color: #c0c0c0 !important;
             transform: translateY(-2px) !important;
             box-shadow: 0 6px 16px rgba(0,0,0,0.2) !important;
         }
