@@ -731,53 +731,51 @@ def initialize_session_state():
 def show_welcome_page():
     st.markdown("""
     <style>
-        /* Set background color for the entire page */
+        /* Background and full-page centering */
         .stApp {
             background-color: #f0f0f0 !important;
-        }
-        
-        /* Center alignment for all elements */
-        .centered-content {
             display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
-            text-align: center;
-            min-height: 80vh;
-            padding: 2rem;
-            margin: 0 auto;
-            max-width: 800px;
+            align-items: center;
+            min-height: 100vh;
         }
         
-        /* Logo container */
+        /* Main content container */
+        .centered-content {
+            text-align: center;
+            width: 100%;
+            max-width: 600px;
+            padding: 2rem;
+            margin: auto;
+        }
+        
+        /* Logo styling */
         .logo-container {
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
         }
         
         /* Title styling */
         .title {
             color: #333333;
             font-size: 2.2rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
+            font-weight: bold;
         }
         
         /* Description styling */
         .description {
             color: #555555;
             font-size: 1.1rem;
-            margin-bottom: 2.5rem;
+            margin-bottom: 2rem;
             line-height: 1.6;
         }
         
         /* Button container */
         .button-container {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            margin-top: 1rem;
+            margin-top: 1.5rem;
         }
         
-        /* Button styling - UNCHANGED */
+        /* Button styling */
         div.stButton > button {
             background-color: #800000 !important;
             color: white !important;
@@ -791,50 +789,38 @@ def show_welcome_page():
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             margin: 0 auto;
         }
-        
-        div.stButton > button:hover {
-            background-color: #600000 !important;
-            transform: scale(1.05);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-        }
-        
-        div.stButton > button:active {
-            background-color: #390000 !important;
-            transform: scale(0.98);
-        }
     </style>
     """, unsafe_allow_html=True)
 
-    # Main content container - centered vertically and horizontally
-    st.markdown('<div class="centered-content">', unsafe_allow_html=True)
-    
-    # Logo container - centered
-    st.markdown('<div class="logo-container">', unsafe_allow_html=True)
-    st.image("logo.png", width=200)
-    st.markdown('</div>', unsafe_allow_html=True)
-    
-    # Title - centered
-    st.markdown('<h1 class="title">Sistem Prediksi Harga Beras</h1>', unsafe_allow_html=True)
-    
-    # Description - centered
-    st.markdown("""
-    <p class="description">
-        Aplikasi ini menggunakan model Fuzzy Time Series Cheng-Adaptive Particle Swarm Optimization 
-        untuk memprediksi harga beras di Surabaya
-    </p>
-    """, unsafe_allow_html=True)
-    
-    # Button container with navigation - centered
-    st.markdown('<div class="button-container">', unsafe_allow_html=True)
-    if st.button("Mulai Aplikasi", 
-                 key="welcome_button",
-                 use_container_width=True):
-        st.session_state.show_main_app = True
-        st.session_state.current_page = "show_upload_page"
-        st.rerun()
-    st.markdown('</div>', unsafe_allow_html=True)
-    
-    st.markdown('</div>', unsafe_allow_html=True)
+    # Main centered container
+    with st.container():
+        st.markdown('<div class="centered-content">', unsafe_allow_html=True)
+        
+        # Logo - centered
+        st.markdown('<div class="logo-container">', unsafe_allow_html=True)
+        st.image("logo.png", width=200)
+        st.markdown('</div>', unsafe_allow_html=True)
+        
+        # Title - centered
+        st.markdown('<h1 class="title">Sistem Prediksi Harga Beras</h1>', unsafe_allow_html=True)
+        
+        # Description - centered
+        st.markdown("""
+        <p class="description">
+            Aplikasi ini menggunakan model Fuzzy Time Series Cheng-Adaptive Particle Swarm Optimization 
+            untuk memprediksi harga beras di Surabaya
+        </p>
+        """, unsafe_allow_html=True)
+        
+        # Button - centered
+        st.markdown('<div class="button-container">', unsafe_allow_html=True)
+        if st.button("Mulai Aplikasi", key="welcome_button"):
+            st.session_state.show_main_app = True
+            st.session_state.current_page = "show_upload_page"
+            st.rerun()
+        st.markdown('</div>', unsafe_allow_html=True)
+        
+        st.markdown('</div>', unsafe_allow_html=True)
         
 def main_app():
     st.markdown("""
