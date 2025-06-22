@@ -731,122 +731,104 @@ def initialize_session_state():
 def show_welcome_page():
     st.markdown("""
     <style>
-        /* Reset default Streamlit padding */
+        /* Reset default Streamlit styles */
         .stApp {
             background: linear-gradient(90deg, #600000 50%, #f0f0f0 50%) !important;
             padding: 0 !important;
             margin: 0 !important;
+            overflow: hidden !important;
         }
         
-        /* Main container adjustment */
-        .split-container {
+        /* Main container with fixed height */
+        .main-container {
             display: flex !important;
-            min-height: 100vh !important;
+            height: 100vh !important;
             width: 100% !important;
-            overflow: hidden !important;  /* Prevent scrolling */
         }
         
-        /* Left side - fixed height content */
-        .left-side {
+        /* Left side - content */
+        .left-content {
             width: 50% !important;
-            padding: 2rem 5rem !important;
-            height: 100vh !important;
-            overflow-y: auto !important;  /* Scroll hanya jika konten terlalu panjang */
-            box-sizing: border-box !important;
-        }
-        
-        /* Right side - fixed height */
-        .right-side {
-            width: 50% !important;
-            padding: 2rem 5rem !important;
-            height: 100vh !important;
-            box-sizing: border-box !important;
+            padding: 40px !important;
             display: flex !important;
             flex-direction: column !important;
+            justify-content: flex-start !important;
         }
         
-        /* Button container positioning */
-        .button-container {
-            margin-top: 2rem !important;
-            width: 220px !important;
+        /* Right side - just for button */
+        .right-content {
+            width: 50% !important;
+            display: flex !important;
+            justify-content: center !important;
+            padding-top: 40px !important;
         }
         
-        /* Keep all other styles the same */
-        .logo-container {
-            margin-bottom: 2rem !important;
-            text-align: left !important;
-            width: fit-content !important;
+        /* Logo styling */
+        .logo {
+            margin-bottom: 30px !important;
+            width: 200px !important;
         }
         
+        /* Title styling */
         .title {
             color: white !important;
             font-size: 2.5rem !important;
-            margin-bottom: 1.5rem !important;
-            text-align: left !important;
-            width: 100% !important;
-            font-weight: 700 !important;
+            margin-bottom: 20px !important;
+            font-weight: bold !important;
         }
         
+        /* Description styling */
         .description {
             color: rgba(255,255,255,0.9) !important;
-            font-size: 1.2rem !important;
-            margin-bottom: 3rem !important;
-            text-align: left !important;
-            line-height: 1.7 !important;
-            width: 100% !important;
+            font-size: 1.1rem !important;
+            line-height: 1.6 !important;
+            margin-bottom: 30px !important;
         }
         
-        .stButton > button {
+        /* Button styling */
+        .main-button {
             background-color: #f0f0f0 !important;
-            color: black !important;
-            border: 1px solid black !important;
+            color: #333 !important;
+            border: 2px solid #333 !important;
             font-weight: bold !important;
-            font-size: 1.1rem !important;
-            width: 100% !important;
-            height: 55px !important;
+            font-size: 1rem !important;
+            width: 200px !important;
+            height: 50px !important;
             border-radius: 8px !important;
             transition: all 0.3s ease !important;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
         }
         
-        .stButton > button:hover {
-            background-color: #c0c0c0 !important;
+        .main-button:hover {
+            background-color: #ddd !important;
             transform: translateY(-2px) !important;
-            box-shadow: 0 6px 16px rgba(0,0,0,0.2) !important;
         }
     </style>
     """, unsafe_allow_html=True)
 
-    # Main split container
-    st.markdown('<div class="split-container">', unsafe_allow_html=True)
+    # Main layout
+    st.markdown('<div class="main-container">', unsafe_allow_html=True)
     
-    # Left side content
-    st.markdown('<div class="left-side">', unsafe_allow_html=True)
-    st.markdown('<div class="logo-container">', unsafe_allow_html=True)
-    st.image("logo.png", width=200)
-    st.markdown('</div>', unsafe_allow_html=True)
-    
+    # Left side - content
+    st.markdown('<div class="left-content">', unsafe_allow_html=True)
+    st.image("logo.png", width=200, output_format="auto")  # Pastikan logo tidak terlalu besar
     st.markdown('<h1 class="title">Sistem Prediksi Harga Beras</h1>', unsafe_allow_html=True)
-    
     st.markdown("""
     <p class="description">
         Aplikasi ini menggunakan model Fuzzy Time Series Cheng-Adaptive Particle Swarm Optimization 
-        untuk<br>memprediksi harga beras di Kota Surabaya<br>
+        untuk memprediksi harga beras di Kota Surabaya
     </p>
     """, unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)  # Close left-side
+    st.markdown('</div>', unsafe_allow_html=True)
     
-    # Right side content
-    st.markdown('<div class="right-side">', unsafe_allow_html=True)
-    st.markdown('<div class="button-container">', unsafe_allow_html=True)
+    # Right side - button
+    st.markdown('<div class="right-content">', unsafe_allow_html=True)
     if st.button("Mulai Aplikasi", key="welcome_button"):
         st.session_state.show_main_app = True
         st.session_state.current_page = "show_upload_page"
         st.rerun()
-    st.markdown('</div>', unsafe_allow_html=True)  # Close button container
-    st.markdown('</div>', unsafe_allow_html=True)  # Close right-side
+    st.markdown('</div>', unsafe_allow_html=True)
     
-    st.markdown('</div>', unsafe_allow_html=True)  # Close split-container
+    st.markdown('</div>', unsafe_allow_html=True)
         
 def main_app():
     st.markdown("""
