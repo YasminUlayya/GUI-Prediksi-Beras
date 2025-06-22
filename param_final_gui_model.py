@@ -735,52 +735,42 @@ def show_welcome_page():
         .stApp {
             background: linear-gradient(90deg, #600000 50%, #f0f0f0 50%) !important;
             min-height: 100vh !important;
-            padding: 0 !important;
+            padding: 20px 0 !important;  /* Added some vertical padding */
             margin: 0 !important;
         }
         
         /* Main container for split layout */
         .split-container {
             display: flex !important;
-            height: 100vh !important;
+            min-height: 100vh !important;  /* Changed from height to min-height */
             width: 100% !important;
-            position: relative !important;
+            align-items: flex-start !important;  /* Align items to top */
         }
         
         /* Left side styling */
         .left-side {
             width: 50% !important;
-            display: flex !important;
-            flex-direction: column !important;
-            justify-content: center !important;
-            align-items: flex-start !important;
-            padding: 0 5rem !important;
+            padding: 2rem 5rem !important;  /* Added top padding */
+            box-sizing: border-box !important;
         }
         
-        /* Right side styling - modified for right-aligned button */
+        /* Right side styling */
         .right-side {
             width: 50% !important;
-            position: relative !important;
-        }
-        
-        /* Button container - new styling */
-        .button-right-container {
-            position: absolute !important;
-            right: 50% !important;
-            transform: translateX(50%) !important;
-            top: 50% !important;
-            transform: translateY(-50%) !important;
-            width: 220px !important;
+            padding: 2rem 5rem !important;  /* Added top padding */
+            box-sizing: border-box !important;
+            display: flex !important;
+            justify-content: flex-start !important;  /* Align to top */
         }
         
         /* Logo styling */
         .logo-container {
             margin-bottom: 2rem !important;
             text-align: left !important;
-            width: 100% !important;
+            width: fit-content !important;
         }
         
-        /* Title styling for left side */
+        /* Title styling */
         .title {
             color: white !important;
             font-size: 2.5rem !important;
@@ -790,7 +780,7 @@ def show_welcome_page():
             font-weight: 700 !important;
         }
         
-        /* Description styling for left side */
+        /* Description styling */
         .description {
             color: rgba(255,255,255,0.9) !important;
             font-size: 1.2rem !important;
@@ -800,19 +790,24 @@ def show_welcome_page():
             width: 100% !important;
         }
         
+        /* Button container */
+        .button-container {
+            width: 220px !important;
+            margin-top: 2rem !important;  /* Added margin from top */
+        }
+        
         /* Button styling */
         .stButton > button {
             background-color: #f0f0f0 !important;
             color: black !important;
-            border: black !important;
+            border: 1px solid black !important;
             font-weight: bold !important;
             font-size: 1.1rem !important;
-            width: 220px !important;
+            width: 100% !important;
             height: 55px !important;
             border-radius: 8px !important;
             transition: all 0.3s ease !important;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
-            display: block !important;
         }
         
         .stButton > button:hover {
@@ -842,9 +837,9 @@ def show_welcome_page():
     """, unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)  # Close left-side
     
-    # Right side content with properly centered button
+    # Right side content
     st.markdown('<div class="right-side">', unsafe_allow_html=True)
-    st.markdown('<div class="button-right-container">', unsafe_allow_html=True)
+    st.markdown('<div class="button-container">', unsafe_allow_html=True)
     if st.button("Mulai Aplikasi", key="welcome_button"):
         st.session_state.show_main_app = True
         st.session_state.current_page = "show_upload_page"
