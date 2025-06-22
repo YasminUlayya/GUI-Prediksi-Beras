@@ -729,15 +729,27 @@ def initialize_session_state():
         st.session_state.column_info = None
 
 def show_welcome_page():
-    # Menambahkan background image dengan st.markdown dan HTML/CSS
     st.markdown(
         """
         <style>
             /* Container utama dengan padding */
             .main-container {
-                padding: 2rem;
                 position: relative;
                 min-height: 100vh;
+            }
+            
+            /* Background image dengan HTML/CSS */
+            .bg-image {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-image: url('bg-rice.jpg');
+                background-size: cover;
+                background-position: center;
+                z-index: -1;
+                opacity: 0.8;
             }
             
             /* Overlay semi-transparan */
@@ -747,7 +759,7 @@ def show_welcome_page():
                 left: 0;
                 right: 0;
                 bottom: 0;
-                background-color: rgba(0, 0, 0, 0.5);
+                background-color: rgba(0, 0, 0, 0.4);
                 z-index: -1;
             }
             
@@ -756,11 +768,12 @@ def show_welcome_page():
                 background-color: rgba(255, 255, 255, 0.95);
                 width: 100%;
                 max-width: 600px;
-                margin: 0 auto;
+                margin: 2rem auto;
                 text-align: center;
                 padding: 2.5rem;
                 border-radius: 15px;
                 box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+                position: relative;
             }
             
             .title {
@@ -802,16 +815,13 @@ def show_welcome_page():
                 box-shadow: 0 6px 16px rgba(0,0,0,0.2);
             }
         </style>
+        
+        <div class="bg-image"></div>
+        <div class="overlay"></div>
         """,
         unsafe_allow_html=True
     )
 
-    # Menambahkan background image dengan st.image
-    st.image("bg-rice.jpg", use_column_width=True, output_format="auto")
-    
-    # Overlay semi-transparan
-    st.markdown('<div class="overlay"></div>', unsafe_allow_html=True)
-    
     # Main content
     col1, col2, col3 = st.columns([1, 6, 1])
     
