@@ -731,46 +731,53 @@ def initialize_session_state():
 def show_welcome_page():
     st.markdown("""
     <style>
-        /* Split background layout */
+        /* Reset default Streamlit padding */
         .stApp {
             background: linear-gradient(90deg, #600000 50%, #f0f0f0 50%) !important;
-            min-height: 100vh !important;
-            padding: 20px 0 !important;  /* Added some vertical padding */
+            padding: 0 !important;
             margin: 0 !important;
         }
         
-        /* Main container for split layout */
+        /* Main container adjustment */
         .split-container {
             display: flex !important;
-            min-height: 100vh !important;  /* Changed from height to min-height */
+            min-height: 100vh !important;
             width: 100% !important;
-            align-items: flex-start !important;  /* Align items to top */
+            overflow: hidden !important;  /* Prevent scrolling */
         }
         
-        /* Left side styling */
+        /* Left side - fixed height content */
         .left-side {
             width: 50% !important;
-            padding: 2rem 5rem !important;  /* Added top padding */
+            padding: 2rem 5rem !important;
+            height: 100vh !important;
+            overflow-y: auto !important;  /* Scroll hanya jika konten terlalu panjang */
             box-sizing: border-box !important;
         }
         
-        /* Right side styling */
+        /* Right side - fixed height */
         .right-side {
             width: 50% !important;
-            padding: 2rem 5rem !important;  /* Added top padding */
+            padding: 2rem 5rem !important;
+            height: 100vh !important;
             box-sizing: border-box !important;
             display: flex !important;
-            justify-content: flex-start !important;  /* Align to top */
+            flex-direction: column !important;
         }
         
-        /* Logo styling */
+        /* Button container positioning */
+        .button-container {
+            margin-top: 2rem !important;
+            width: 220px !important;
+        }
+        
+        /* Keep all other styles the same */
         .logo-container {
             margin-bottom: 2rem !important;
             text-align: left !important;
             width: fit-content !important;
         }
         
-        /* Title styling */
         .title {
             color: white !important;
             font-size: 2.5rem !important;
@@ -780,7 +787,6 @@ def show_welcome_page():
             font-weight: 700 !important;
         }
         
-        /* Description styling */
         .description {
             color: rgba(255,255,255,0.9) !important;
             font-size: 1.2rem !important;
@@ -790,13 +796,6 @@ def show_welcome_page():
             width: 100% !important;
         }
         
-        /* Button container */
-        .button-container {
-            width: 220px !important;
-            margin-top: 2rem !important;  /* Added margin from top */
-        }
-        
-        /* Button styling */
         .stButton > button {
             background-color: #f0f0f0 !important;
             color: black !important;
