@@ -818,7 +818,7 @@ def show_welcome_page():
     
     # Logo - left aligned
     st.markdown('<div class="logo-container">', unsafe_allow_html=True)
-    st.image("LOGO RiceOracle.png", width=200)
+    st.image("LOGO 3b RiceOracle.png", width=200)
     st.markdown('</div>', unsafe_allow_html=True)
     
     # Title - left aligned
@@ -920,7 +920,7 @@ def main_app():
     with st.sidebar:
         # Tambahkan logo di atas navigasi
         st.markdown('<div class="sidebar-logo">', unsafe_allow_html=True)
-        st.image("LOGO RiceOracle.png", use_container_width=True)
+        st.image("LOGO 3b RiceOracle.png", use_container_width=True)
         st.markdown('</div>', unsafe_allow_html=True)
         
         selected = option_menu(
